@@ -4,14 +4,6 @@
 #include "conf.h"
 #include "buttons.h"
 
-void load_cfg_parameters(struct Config *st) {
-    for (int i = 0; i < N; ++i) {
-        button_labels[i] = st->labels[i];
-        selected[i] = st->selected[i];
-    }
-    columns = st->columns;
-}
-
 char *str_to_lower(const char *s) {
     size_t len = strlen(s);
     char *res = (char *) malloc((len + 1) * sizeof(char));
@@ -22,26 +14,27 @@ char *str_to_lower(const char *s) {
     return res;
 }
 
-void button_clicked(GtkWidget *widget, gpointer data) {
+void button_clicked(GtkWidget *widget, gpointer data, struct Config *st) {
     const char *label = (const char *) data;
     for (int i = 0; i < N; ++i) {
-        if (strcmp(label, button_labels[i]) == 0) {
+        if (strcmp(label, st->labels[i]) == 0) {
             system(commands[i]);
         }
     }
 }
 
-void gen_buttons(GtkWidget *grid) {
-    GtkWidget* buttons[N];
+void gen_buttons(GtkWidget *grid, struct Config *st) {
+    GtkWidget *buttons[N];
     for (int i = 0; i < N; ++i) {
-        if (selected[i] == 0) {
+        if (st->selected[i] == 0) {
+            st->unselected++;
             continue;
         }
-        buttons[i] = gtk_button_new_with_label(button_labels[i]);
-        gchar *button_name = g_strdup_printf("button-%s", str_to_lower(button_labels[i]));
+        buttons[i] = gtk_button_new_with_label(st->labels[i]);
+        gchar *button_name = g_strdup_printf("button-%s", str_to_lower(st->labels[i]));
         gtk_widget_set_name(buttons[i], button_name);
         g_free(button_name);
-        g_signal_connect(buttons[i], "clicked", G_CALLBACK(button_clicked), (gpointer) button_labels[i]);
-        gtk_grid_attach(GTK_GRID(grid), buttons[i], i % columns, i / columns + 1, 1, 1);
+        g_signal_connect(buttons[i], "clicked", G_CALLBACK(button_clicked), (gpointer) st->labels[i]);
+        gtk_grid_attach(GTK_GRID(grid), buttons[i], i % st->columns, i / st->columns + 1, 1, 1);
     }
 }

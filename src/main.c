@@ -11,10 +11,9 @@ int main(int argc, char *argv[]) {
     gtk_widget_set_name(window, "window");
     struct Config config;
     if (read_cfg(cfg_file, &config) == -1 || load_css(css_file) == -1) {
-        fprintf(stderr, "File error. Aborting the process\n.");
+        fprintf(stderr, "File error. Aborting the process.\n");
         return -1;
     }
-    load_cfg_parameters(&config);
 
     gtk_window_set_title(GTK_WINDOW(window), "Power Menu");
     gtk_widget_set_size_request(window, config.width, config.height);
@@ -32,7 +31,7 @@ int main(int argc, char *argv[]) {
         gtk_grid_attach(GTK_GRID(grid), top_label, 0, 0, config.columns, 1);
     }
 
-    gen_buttons(grid);
+    gen_buttons(grid, &config);
 
     if (strcmp(config.bottom_text, "")) {
         GtkWidget *bottom_label = gtk_label_new(config.bottom_text);

@@ -25,6 +25,7 @@ struct Config {
     char *top_text;
     char *bottom_text;
     int selected[N];
+    int unselected;
     char *labels[N];
 };
 

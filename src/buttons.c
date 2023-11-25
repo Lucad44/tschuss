@@ -25,6 +25,7 @@ void button_clicked(GtkWidget *widget, gpointer data, struct Config *st) {
 
 void gen_buttons(GtkWidget *grid, struct Config *st) {
     GtkWidget *buttons[N];
+    int j = 0;
     for (int i = 0; i < N; ++i) {
         if (st->selected[i] == 0) {
             st->unselected++;
@@ -35,6 +36,7 @@ void gen_buttons(GtkWidget *grid, struct Config *st) {
         gtk_widget_set_name(buttons[i], button_name);
         g_free(button_name);
         g_signal_connect(buttons[i], "clicked", G_CALLBACK(button_clicked), (gpointer) st->labels[i]);
-        gtk_grid_attach(GTK_GRID(grid), buttons[i], i % st->columns, i / st->columns + 1, 1, 1);
+        gtk_grid_attach(GTK_GRID(grid), buttons[i], j % st->columns, j / st->columns + 1, 1, 1);
+        j++;
     }
 }

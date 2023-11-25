@@ -21,6 +21,7 @@ struct Config {
     int x; 
     int y;
     int border_width;
+    int columns;
     char *top_text;
     char *bottom_text;
     int selected[N];

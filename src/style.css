@@ -14,3 +14,7 @@ button {
     margin-bottom: 5px;
     margin-top: 5px;
 }
+
+#top-text {
+    font-weight: bold;
+}

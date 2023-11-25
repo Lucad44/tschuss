@@ -4,11 +4,12 @@
 #include "conf.h"
 #include "buttons.h"
 
-void load_labels(struct Config *st) {
+void load_cfg_parameters(struct Config *st) {
     for (int i = 0; i < N; ++i) {
         button_labels[i] = st->labels[i];
         selected[i] = st->selected[i];
     }
+    columns = st->columns;
 }
 
 char *str_to_lower(const char *s) {
@@ -41,6 +42,6 @@ void gen_buttons(GtkWidget *grid) {
         gtk_widget_set_name(buttons[i], button_name);
         g_free(button_name);
         g_signal_connect(buttons[i], "clicked", G_CALLBACK(button_clicked), (gpointer) button_labels[i]);
-        gtk_grid_attach(GTK_GRID(grid), buttons[i], i % 2, i / 2, 1, 1);
+        gtk_grid_attach(GTK_GRID(grid), buttons[i], i % columns, i / columns + 1, 1, 1);
     }
 }

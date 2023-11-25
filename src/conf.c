@@ -41,7 +41,8 @@ int read_cfg(const char *cfg_file, struct Config *st) {
     }
 
     const char *top_text, *bottom_text;
-    if (!(config_lookup_int(&cfg, "border_width", &st->border_width) &&
+    if (!(config_lookup_int(&cfg, "columns", &st->columns) &&
+        config_lookup_int(&cfg, "border_width", &st->border_width) &&
         config_lookup_string(&cfg, "top_text", &top_text) &&
         config_lookup_string(&cfg, "bottom_text", &bottom_text))) {
             fprintf(stderr, "Error in the '%s' config file: missing/invalid values.\n", cfg_file);

@@ -49,11 +49,16 @@ int read_cfg(const char *cfg_file, struct Config *st) {
             config_destroy(&cfg);
             return -1;
     }
+    if (st->columns <= 0) {
+        fprintf(stderr, "Error in the '%s' config file: invalid 'columns' value");
+        return -1;
+    }
+    
     size_t top_len = strlen(top_text), bottom_len = strlen(bottom_text);
     st->top_text = malloc(top_len + 1);
     st->bottom_text  = malloc(bottom_len + 1);
-    strcpy(st->top_text, top_text);
-    strcpy(st->bottom_text, bottom_text);
+    strncpy(st->top_text, top_text, top_len + 1);
+    strncpy(st->bottom_text, bottom_text, bottom_len + 1);
     config_setting_t *setting;
 
     setting = config_lookup(&cfg, "size");
@@ -95,7 +100,7 @@ int read_cfg(const char *cfg_file, struct Config *st) {
             label = config_setting_get_string_elem(setting, i);
             size_t len = strlen(label);
             st->labels[i] = malloc(len + 1);
-            strcpy(st->labels[i], label);
+            strncpy(st->labels[i], label, len + 1);
         }
     }
     else {

@@ -1,20 +1,44 @@
 #window {
-    background-color: rgb(32, 34, 36);
+    background-color: rgba(32, 34, 36, 0.2);
 }
 
 button {
-    background-color: rgb(37, 36, 36);
+    background-color: rgba(32, 34, 36, 0.2);
     color: white;
     border: solid;
-    border-width: 3px;
-    border-color: white;
-    border-radius: 20px;
-    margin-left: 8px;
-    margin-right: 8px;
+    margin-left: 0px;
+    margin-right: 0px;
     margin-bottom: 5px;
     margin-top: 5px;
+    font-size: 13px;
+}
+
+#shutdown {
+    color: rgb(214, 34, 34);
+}
+
+#reboot {
+    color: rgb(72, 255, 0);
+}
+
+#logout {
+    color: orange;
+}
+
+#hibernate {
+    color: rgb(5, 127, 241);
+}
+
+#suspend {
+    color: rgb(180, 180, 166)
+}
+
+#lock {
+    color: yellow;
 }
 
 #top-text {
     font-weight: bold;
 }
+
+

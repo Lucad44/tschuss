@@ -4,7 +4,8 @@
         "gtkcss.h": "c",
         "stdio.h": "c",
         "ctype.h": "c",
-        "gtk.h": "c"
+        "gtk.h": "c",
+        "stdlib.h": "c"
     },
     "glassit.alpha": 150
 }

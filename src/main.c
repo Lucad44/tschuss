@@ -1,21 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
+#include <stdbool.h>
 
 #include "buttons.h"
 #include "conf.h"
+
+#define ESC 27
 
 int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_name(window, "window");
     struct Config config;
-    if (read_cfg(cfg_file, &config) == -1 || load_css(css_file) == -1) {
+    button buttons_cfg[N];
+    if (read_cfg(cfg_file, &config, buttons_cfg) == -1 || load_css(css_file) == -1) {
         fprintf(stderr, "File error. Aborting the process.\n");
         return -1;
     }
 
-    gtk_window_set_title(GTK_WINDOW(window), "Power Menu");
+    gtk_window_set_title(GTK_WINDOW(window), "tschuss");
     gtk_widget_set_size_request(window, config.width, config.height);
     gtk_container_set_border_width(GTK_CONTAINER(window), config.border_width);
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
@@ -31,7 +35,7 @@ int main(int argc, char *argv[]) {
         gtk_grid_attach(GTK_GRID(grid), top_label, 0, 0, config.columns, 1);
     }
 
-    gen_buttons(grid, &config);
+    gen_buttons(grid, &config, buttons_cfg);
 
     if (strcmp(config.bottom_text, "")) {
         GtkWidget *bottom_label = gtk_label_new(config.bottom_text);
@@ -39,9 +43,10 @@ int main(int argc, char *argv[]) {
         gtk_grid_attach(GTK_GRID(grid), bottom_label, 0, N / config.columns + 1 + (config.columns >= 4), config.columns, 1);
     }
 
-    g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(window, "key-press-event", G_CALLBACK(on_key_press), NULL);
+    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     gtk_widget_show_all(window);
     gtk_main();
-
+    
     return 0;
 }

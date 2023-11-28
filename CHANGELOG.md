@@ -1,21 +1,23 @@
-# Version 1.2
+# Version 1.5
 
 ## New Features
-- You can now customise the menu properly with the `tschuss.conf` file
-- Added more labels and customisation possibilities with the `style.css` file
+- Completely restructured the config file, much easier to browse and use 
+- You can now set a keybind for every command
+- You can now set a custom commmand for each button, as well a custom label
 
 ### Config options
-- Moved location argument from command line to config file
 - Added many more config options such as:
-- `location`
-- `width`
-- `height`
-- `coordinates (x & y)`
-- `selected`
-- `labels`
+- `shutdown`
+- `reboot`
+- `logout`
+- `hibernate`
+- `suspend`
+- `lock`
 
 ## Bug fixes
-- The program now won't crash your machine if you don't set some values in the config/set invalid values
+- Added more safety features
+- Nerd fonts displayed properly now
+- Lock command now working properly
 
 ---
 

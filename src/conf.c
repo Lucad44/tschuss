@@ -29,7 +29,7 @@ int load_css(const char *css_file) {
     return 0;
 }
 
-int read_cfg(const char *cfg_file, struct Config *st) {
+int read_cfg(const char *cfg_file, struct Config *st, button buttons_cfg[N]) {
     config_t cfg;
     config_init(&cfg);
 
@@ -55,57 +55,50 @@ int read_cfg(const char *cfg_file, struct Config *st) {
     }
     
     size_t top_len = strlen(top_text), bottom_len = strlen(bottom_text);
-    st->top_text = malloc(top_len + 1);
-    st->bottom_text  = malloc(bottom_len + 1);
+    st->top_text = malloc(sizeof(char) * (top_len + 1));
+    st->bottom_text  = malloc(sizeof(char) * (bottom_len + 1));
     strncpy(st->top_text, top_text, top_len + 1);
     strncpy(st->bottom_text, bottom_text, bottom_len + 1);
-    config_setting_t *setting;
 
-    setting = config_lookup(&cfg, "size");
-    if (setting != NULL) {
-        st->width = config_setting_get_int_elem(setting, 0);
-        st->height = config_setting_get_int_elem(setting, 1);
+    config_setting_t *size = config_lookup(&cfg, "size");
+    if (size != NULL) {
+        st->width = config_setting_get_int_elem(size, 0);
+        st->height = config_setting_get_int_elem(size, 1);
     }
     else {
         fprintf(stderr, "Error in the 'position' configuration: invalid/missing values.\n");
         return -1;
     }
 
-
-    setting = config_lookup(&cfg, "position");
-    if (setting != NULL) {
-        st->x = config_setting_get_int_elem(setting, 0);
-        st->y = config_setting_get_int_elem(setting, 1);
+    config_setting_t *position = config_lookup(&cfg, "position");
+    if (position != NULL) {
+        st->x = config_setting_get_int_elem(position, 0);
+        st->y = config_setting_get_int_elem(position, 1);
     }
     else {
-        fprintf(stderr, "Error in the 'position' configuration: invalid/missing values.\n");
-        return -1;
+        fprintf(stderr, "No/invalid x and y values. Using the default position instead.\n");
     }
 
-    setting = config_lookup(&cfg, "selected");
-    if (setting != NULL) {
-        for (int i = 0; i < N; ++i) {
-            st->selected[i] = config_setting_get_int_elem(setting, i);
+    for (int i = 0; i < N; ++i) {
+        config_setting_t *setting = config_lookup(&cfg, button_names[i]);
+        if (setting != NULL) {
+            const char *label = config_setting_get_string_elem(setting, 0);
+            size_t label_len = strlen(label);
+            buttons_cfg[i].label = malloc(sizeof(char) * (label_len + 1));
+            strncpy(buttons_cfg[i].label, label, label_len + 1);
+
+            const char *action = config_setting_get_string_elem(setting, 1);
+            size_t action_len = strlen(action);
+            buttons_cfg[i].action = malloc(sizeof(char) * (action_len + 1));
+            strncpy(buttons_cfg[i].action, action, action_len + 1);
+
+            buttons_cfg[i].selected = config_setting_get_bool_elem(setting, 2);
+            buttons_cfg[i].bind = (guint) config_setting_get_int_elem(setting, 3);
         }
-    }
-    else {
-        fprintf(stderr, "Error in the 'selected' configuration: invalid/missing values.\n");
-        return -1;
-    }
-
-    setting = config_lookup(&cfg, "labels");
-    const char *label;
-    if (setting != NULL) {
-        for (int i = 0; i < N; ++i) {
-            label = config_setting_get_string_elem(setting, i);
-            size_t len = strlen(label);
-            st->labels[i] = malloc(len + 1);
-            strncpy(st->labels[i], label, len + 1);
-        }
-    }
-    else {
-        fprintf(stderr, "Error in the 'labels' configuration: invalid/missing values.\n");
-        return -1;
+        else {
+            fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
+            return -1;
+        }   
     }
 
     config_destroy(&cfg);

@@ -6,7 +6,13 @@
 #include "conf.h"
 #include "buttons.h"
 
-void button_clicked(GtkWidget *widget, gpointer data, button *buttons_cfg[N]) {
+void load_buttons_struct(button *buttons_cfg_main[N]) {
+    for (int i = 0; i < N; ++i) {
+        buttons_cfg[i] = buttons_cfg_main[i];
+    }
+}
+
+void button_clicked(GtkWidget *widget, gpointer data) {
     const char *label = gtk_widget_get_name(widget);
     for (int i = 0; i < N; ++i) {
         if (strcmp(label, button_names[i]) == 0) {
@@ -15,7 +21,7 @@ void button_clicked(GtkWidget *widget, gpointer data, button *buttons_cfg[N]) {
     }
 }
 
-void gen_buttons(GtkWidget *grid, struct Config *st, button *buttons_cfg[N]) {
+void gen_buttons(GtkWidget *grid, struct Config *st) {
     GtkWidget *buttons[N];
     for (int i = 0, j = 0; i < N; ++i) {
         if (!buttons_cfg[i]->selected) {
@@ -30,16 +36,19 @@ void gen_buttons(GtkWidget *grid, struct Config *st, button *buttons_cfg[N]) {
     }
 }
 
-gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data, button *buttons_cfg[N]) {
+gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
     guint keyval = event->keyval;
     if (keyval == GDK_KEY_Escape) {
         gtk_main_quit();
         return TRUE;
     }
+    FILE *f = fopen("debug.txt", "a");
     for (int i = 0; i < N; ++i) {
-        if (buttons_cfg[i]->bind == keyval) {
+        if (keyval == buttons_cfg[i]->bind) {
+            system(buttons_cfg[i]->action);
             return TRUE;
         }
     }
+    fclose(f);
     return FALSE;
 }

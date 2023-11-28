@@ -6,8 +6,6 @@
 #include "buttons.h"
 #include "conf.h"
 
-#define ESC 27
-
 int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -39,7 +37,8 @@ int main(int argc, char *argv[]) {
         gtk_grid_attach(GTK_GRID(grid), top_label, 0, 0, config.columns, 1);
     }
 
-    gen_buttons(grid, &config, buttons_cfg);
+    load_buttons_struct(buttons_cfg);
+    gen_buttons(grid, &config);
 
     if (strcmp(config.bottom_text, "")) {
         GtkWidget *bottom_label = gtk_label_new(config.bottom_text);
@@ -47,6 +46,7 @@ int main(int argc, char *argv[]) {
         gtk_grid_attach(GTK_GRID(grid), bottom_label, 0, N / config.columns + 1 + (config.columns >= 4), config.columns, 1);
     }
 
+    gtk_widget_add_events(window, GDK_KEY_PRESS_MASK);
     g_signal_connect(window, "key-press-event", G_CALLBACK(on_key_press), NULL);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     gtk_widget_show_all(window);

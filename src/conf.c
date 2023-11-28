@@ -78,7 +78,6 @@ int read_cfg(const char *cfg_file, struct Config *st, button *buttons_cfg[N]) {
     else {
         fprintf(stderr, "No/invalid x and y values. Using the default position instead.\n");
     }
-    FILE *f = fopen("debug.txt", "a");
     for (int i = 0; i < N; ++i) {
         config_setting_t *setting = config_lookup(&cfg, button_names[i]);
         if (setting != NULL) {
@@ -94,14 +93,13 @@ int read_cfg(const char *cfg_file, struct Config *st, button *buttons_cfg[N]) {
 
             buttons_cfg[i]->selected = config_setting_get_bool_elem(setting, 2);
             buttons_cfg[i]->bind = (guint) config_setting_get_int_elem(setting, 3);
-            fprintf(f, "\n%s:\n label: %s\n action: %s\n selected: %s\n bind: %d\n", button_names[i], buttons_cfg[i]->label, buttons_cfg[i]->action, buttons_cfg[i]->selected ? "true" : "false", buttons_cfg[i]->bind);
         }
         else {
             fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
             return -1;
         }   
     }
-    fclose(f);
+    
     config_destroy(&cfg);
     return 0;
 }

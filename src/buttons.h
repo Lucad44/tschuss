@@ -10,7 +10,7 @@ static button *buttons_cfg[N];
 
 void load_buttons_struct(button *buttons_cfg_main[N]);
 
-void button_clicked(GtkWidget *widget, gpointer data);
+void button_clicked(GtkWidget *widget, char *action);
 
 void gen_buttons(GtkWidget *grid, struct Config *st);
 

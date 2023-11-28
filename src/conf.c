@@ -8,7 +8,7 @@
 
 int load_css(const char *css_file) {
     if (access(css_file, F_OK) == -1) {
-        fprintf(stderr, "No '%s' file found.\n", css_file);
+        fprintf(stderr, "\nNo '%s' file found.\n", css_file);
         return -1;
     }
 
@@ -29,12 +29,12 @@ int load_css(const char *css_file) {
     return 0;
 }
 
-int read_cfg(const char *cfg_file, struct Config *st, button buttons_cfg[N]) {
+int read_cfg(const char *cfg_file, struct Config *st, button *buttons_cfg[N]) {
     config_t cfg;
     config_init(&cfg);
 
     if (!config_read_file(&cfg, cfg_file)) {
-        fprintf(stderr, "%s:%d - %sConfig file '%s' not found\n", config_error_file(&cfg),
+        fprintf(stderr, "%s:%d - %s\nConfig file '%s' not found\n", config_error_file(&cfg),
                 config_error_line(&cfg), config_error_text(&cfg), cfg_file);
         config_destroy(&cfg);
         return -1;
@@ -78,29 +78,30 @@ int read_cfg(const char *cfg_file, struct Config *st, button buttons_cfg[N]) {
     else {
         fprintf(stderr, "No/invalid x and y values. Using the default position instead.\n");
     }
-
+    FILE *f = fopen("debug.txt", "a");
     for (int i = 0; i < N; ++i) {
         config_setting_t *setting = config_lookup(&cfg, button_names[i]);
         if (setting != NULL) {
             const char *label = config_setting_get_string_elem(setting, 0);
             size_t label_len = strlen(label);
-            buttons_cfg[i].label = malloc(sizeof(char) * (label_len + 1));
-            strncpy(buttons_cfg[i].label, label, label_len + 1);
+            buttons_cfg[i]->label = malloc(sizeof(char) * (label_len + 1));
+            strncpy(buttons_cfg[i]->label, label, label_len + 1);
 
             const char *action = config_setting_get_string_elem(setting, 1);
             size_t action_len = strlen(action);
-            buttons_cfg[i].action = malloc(sizeof(char) * (action_len + 1));
-            strncpy(buttons_cfg[i].action, action, action_len + 1);
+            buttons_cfg[i]->action = malloc(sizeof(char) * (action_len + 1));
+            strncpy(buttons_cfg[i]->action, action, action_len + 1);
 
-            buttons_cfg[i].selected = config_setting_get_bool_elem(setting, 2);
-            buttons_cfg[i].bind = (guint) config_setting_get_int_elem(setting, 3);
+            buttons_cfg[i]->selected = config_setting_get_bool_elem(setting, 2);
+            buttons_cfg[i]->bind = (guint) config_setting_get_int_elem(setting, 3);
+            fprintf(f, "\n%s:\n label: %s\n action: %s\n selected: %s\n bind: %d\n", button_names[i], buttons_cfg[i]->label, buttons_cfg[i]->action, buttons_cfg[i]->selected ? "true" : "false", buttons_cfg[i]->bind);
         }
         else {
             fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
             return -1;
         }   
     }
-
+    fclose(f);
     config_destroy(&cfg);
     return 0;
 }

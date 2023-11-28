@@ -40,6 +40,6 @@ typedef struct {
 
 int load_css(const char *css_file);
 
-int read_cfg(const char *cfg_file, struct Config *st, button buttons[N]);
+int read_cfg(const char *cfg_file, struct Config *st, button *buttons[N]);
 
 #endif

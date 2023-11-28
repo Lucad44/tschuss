@@ -13,7 +13,11 @@ int main(int argc, char *argv[]) {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_name(window, "window");
     struct Config config;
-    button buttons_cfg[N];
+    button *buttons_cfg[N];
+    for (int i = 0; i < N; ++i) {
+        buttons_cfg[i] = malloc(sizeof(button));
+    }
+
     if (read_cfg(cfg_file, &config, buttons_cfg) == -1 || load_css(css_file) == -1) {
         fprintf(stderr, "File error. Aborting the process.\n");
         return -1;
@@ -47,6 +51,6 @@ int main(int argc, char *argv[]) {
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     gtk_widget_show_all(window);
     gtk_main();
-    
+
     return 0;
 }

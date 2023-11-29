@@ -12,6 +12,10 @@ void load_buttons_struct(button *buttons_cfg_main[N]) {
     }
 }
 
+char *get_command(void) {
+    return command;
+} 
+
 void button_clicked(GtkWidget *widget, char *action) {
     size_t action_len = strlen(action);
     command = malloc((action_len + 1) * sizeof(char));

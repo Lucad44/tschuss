@@ -5,7 +5,9 @@
         "stdio.h": "c",
         "ctype.h": "c",
         "gtk.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "conf.h": "c",
+        "stdbool.h": "c"
     },
     "glassit.alpha": 150
 }

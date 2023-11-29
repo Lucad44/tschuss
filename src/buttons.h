@@ -12,6 +12,8 @@ static char *command;
 
 void load_buttons_struct(button *buttons_cfg_main[N]);
 
+char *get_command(void);
+
 void button_clicked(GtkWidget *widget, char *action);
 
 void gen_buttons(GtkWidget *grid, struct Config *st);

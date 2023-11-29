@@ -73,14 +73,17 @@ int main(int argc, char *argv[]) {
     gtk_widget_show_all(window);
     gtk_main();
 
+    const char *action;
+    action = get_command();
+    g_print("\n%s", action);
+
+    free(command);
+    free(config.top_text);
+    free(config.bottom_text);
     for (int i = 0; i < N; ++i) {
-        free(config.top_text);
-        free(config.bottom_text);
         free(buttons_cfg[i]->label);
         free(buttons_cfg[i]->action);
         free(buttons_cfg[i]);
     }
-    system(command);
-    free(command);
     return 0;
 }

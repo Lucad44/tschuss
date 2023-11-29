@@ -4,18 +4,17 @@
 #include <string.h>
 
 #include "conf.h"
-#include "buttons.h"
 
-int load_css(const char *css_file) {
-    if (access(css_file, F_OK) == -1) {
-        fprintf(stderr, "\nNo '%s' file found.\n", css_file);
+int load_css(const char *css_path) {
+    if (access(css_path, F_OK) == -1) {
+        fprintf(stderr, "\nNo '%s' file found.\n", css_path);
         return -1;
     }
 
     GtkCssProvider *provider;
     GdkDisplay *display;
     GdkScreen *screen;
-    GFile *css_fp = g_file_new_for_path(css_file);
+    GFile *css_fp = g_file_new_for_path(css_path);
     GError *error = 0;
 
     provider = gtk_css_provider_new();
@@ -29,13 +28,13 @@ int load_css(const char *css_file) {
     return 0;
 }
 
-int read_cfg(const char *cfg_file, struct Config *st, button *buttons_cfg[N]) {
+int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
     config_t cfg;
     config_init(&cfg);
 
-    if (!config_read_file(&cfg, cfg_file)) {
+    if (!config_read_file(&cfg, cfg_path)) {
         fprintf(stderr, "%s:%d - %s\nConfig file '%s' not found\n", config_error_file(&cfg),
-                config_error_line(&cfg), config_error_text(&cfg), cfg_file);
+                config_error_line(&cfg), config_error_text(&cfg), cfg_path);
         config_destroy(&cfg);
         return -1;
     }
@@ -45,7 +44,7 @@ int read_cfg(const char *cfg_file, struct Config *st, button *buttons_cfg[N]) {
         config_lookup_int(&cfg, "border_width", &st->border_width) &&
         config_lookup_string(&cfg, "top_text", &top_text) &&
         config_lookup_string(&cfg, "bottom_text", &bottom_text))) {
-            fprintf(stderr, "Error in the '%s' config file: missing/invalid values.\n", cfg_file);
+            fprintf(stderr, "Error in the '%s' config file: missing/invalid values.\n", cfg_path);
             config_destroy(&cfg);
             return -1;
     }

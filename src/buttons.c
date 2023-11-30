@@ -24,10 +24,19 @@ void button_clicked(GtkWidget *widget, char *action) {
     gtk_main_quit();
 }
 
+void make_label(GtkWidget *vbox, const char *text, const char *name, GtkWidget *arr[N], int i) {
+    arr[i] = gtk_label_new(name);
+    gchar *label_name = g_strdup_printf("%s-%s", text, button_names[i]);
+    gtk_widget_set_name(arr[i], label_name);
+    g_free(label_name);
+    gtk_box_pack_start(GTK_BOX(vbox), arr[i], TRUE, TRUE, 0);
+}
+
 void gen_buttons(GtkWidget *grid, struct Config *st) {
     GtkWidget *buttons[N];
+    GtkWidget *titles[N];
     GtkWidget *main_labels[N];
-    GtkWidget *additional_labels[N];
+    GtkWidget *descriptions[N];
     for (int i = 0, j = 0; i < N; ++i) {
         if (!buttons_cfg[i]->selected) {
             continue;
@@ -39,20 +48,12 @@ void gen_buttons(GtkWidget *grid, struct Config *st) {
             gtk_widget_set_hexpand(buttons[i], TRUE);
             gtk_widget_set_vexpand(buttons[i], TRUE);
 
-            GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+            GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
             gtk_container_add(GTK_CONTAINER(buttons[i]), vbox);
 
-            main_labels[i] = gtk_label_new(buttons_cfg[i]->label);
-            gchar *main_name = g_strdup_printf("label-%s", button_names[i]);
-            gtk_widget_set_name(main_labels[i], main_name);
-            g_free(main_name);
-            gtk_box_pack_start(GTK_BOX(vbox), main_labels[i], TRUE, TRUE, 0);
-
-            additional_labels[i] = gtk_label_new(buttons_cfg[i]->description);
-            gchar *additional_name = g_strdup_printf("description-%s", button_names[i]);
-            gtk_widget_set_name(additional_labels[i], additional_name);
-            g_free(additional_name);
-            gtk_box_pack_start(GTK_BOX(vbox), additional_labels[i], TRUE, TRUE, 0);
+            make_label(vbox, "title", buttons_cfg[i]->title, titles, i);
+            make_label(vbox, "label", buttons_cfg[i]->label, main_labels, i);
+            make_label(vbox, "description", buttons_cfg[i]->description, descriptions, i);
 
             g_signal_connect(buttons[i], "clicked", G_CALLBACK(button_clicked), buttons_cfg[i]->action);
             gtk_grid_attach(GTK_GRID(grid), buttons[i], j % st->columns, j / st->columns + 1, 1, 1);

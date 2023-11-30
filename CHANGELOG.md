@@ -1,4 +1,4 @@
-# Version 1.5
+# Version 1.3.1
 
 ## New Features
 - Completely restructured the config file, much easier to browse and use 

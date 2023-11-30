@@ -15,7 +15,7 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
         {NULL, 0, NULL, 0}    
     };
 
-    const char *version = "1.6.0";
+    const char *version = "1.3.1";
     const char *help = 
         "Usage: tschuss [options]\n"
         "\n"
@@ -27,7 +27,7 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
 
     int c;
     int option_index = 0;
-    while ((c = getopt_long(argc, argv, "t:s:hv", long_options, &option_index)) != -1) {
+    while ((c = getopt_long(argc, argv, "c:s:hv", long_options, &option_index)) != -1) {
         switch (c) {
             case 'h':
                 g_print("%s\n", help);
@@ -35,7 +35,7 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
             case 'v':
                 g_print("tschuss's current version: %s\n", version);
                 return FALSE;
-            case 't':
+            case 'c':
                 if (access(optarg, F_OK) == -1) {
                     fprintf(stderr, "Invalid path. Using the default one instead.\n");
                     return FALSE;
@@ -165,28 +165,34 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
         int valid_options[OPTIONS_NUM];
         config_setting_t *setting = config_lookup(&cfg, button_names[i]);
         if (setting != NULL) {
+            const char *title;
+            valid_options[0] = config_setting_lookup_string(setting, "title", &title);
+            size_t title_len = strlen(title);
+            buttons_cfg[i]->title = malloc((title_len + 1) * sizeof(char));
+            strncpy(buttons_cfg[i]->title, title, title_len + 1);
+
             const char *label;
-            valid_options[0] = config_setting_lookup_string(setting, "label", &label);
+            valid_options[1] = config_setting_lookup_string(setting, "label", &label);
             size_t label_len = strlen(label);
             buttons_cfg[i]->label = malloc((label_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->label, label, label_len + 1);
 
             const char *description;
-            valid_options[1] = config_setting_lookup_string(setting, "description", &description);
+            valid_options[2] = config_setting_lookup_string(setting, "description", &description);
             size_t description_len = strlen(description);
             buttons_cfg[i]->description = malloc((description_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->description, description, description_len + 1);
 
             const char *action;
-            valid_options[2] = config_setting_lookup_string(setting, "action", &action);
+            valid_options[3] = config_setting_lookup_string(setting, "action", &action);
             size_t action_len = strlen(action);
             buttons_cfg[i]->action = malloc((action_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->action, action, action_len + 1);
 
             int sel, inv, bind;
-            valid_options[3] = config_setting_lookup_bool(setting, "selected", &sel);
-            valid_options[4] = config_setting_lookup_bool(setting, "invisible", &inv);
-            valid_options[5] = config_setting_lookup_int(setting, "bind", &bind);
+            valid_options[4] = config_setting_lookup_bool(setting, "selected", &sel);
+            valid_options[5] = config_setting_lookup_bool(setting, "invisible", &inv);
+            valid_options[6] = config_setting_lookup_int(setting, "bind", &bind);
             buttons_cfg[i]->selected = (bool) sel;
             buttons_cfg[i]->invisible = (bool) inv;
             buttons_cfg[i]->bind = (guint) bind;

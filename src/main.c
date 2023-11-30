@@ -24,6 +24,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    g_set_prgname("tschuss");
     gtk_init(&argc, &argv);
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_name(window, "window");

@@ -28,28 +28,30 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
     int c;
     while ((c = getopt(argc, argv, "t:s:hv")) != -1) {
         switch (c) {
-        case 'h':
-            g_print("%s\n", help);
-            return FALSE;
-        case 'v':
-            g_print("tschuss's current version: %s\n", version);
-            return FALSE;
-        case 't':
-            if (access(optarg, F_OK) == -1) {
-                fprintf(stderr, "Invalid path. Using the default one instead.\n");
+            case 'h':
+                g_print("%s\n", help);
                 return FALSE;
-            }
-            //cfg_path = g_strdup(optarg);
-            g_print("%s\n", "bonjour");
-            break;
-        case 's':
-            if (access(optarg, F_OK) == -1) {
-                fprintf(stderr, "Invalid path. Using the default one instead.\n");
+            case 'v':
+                g_print("tschuss's current version: %s\n", version);
                 return FALSE;
-            }
-            //css_path = g_strdup(optarg);
-            g_print("%s\n", "bonjour");
-            break;
+            case 't':
+                if (access(optarg, F_OK) == -1) {
+                    fprintf(stderr, "Invalid path. Using the default one instead.\n");
+                    return FALSE;
+                }
+                g_print("\n%s", optarg);
+                strncpy(cfg_path, optarg, MAX_USER_SZ);
+                break;
+            case 's':
+                if (access(optarg, F_OK) == -1) {
+                    fprintf(stderr, "Invalid path. Using the default one instead.\n");
+                    return FALSE;
+                }
+                g_print("\n%s", optarg);
+                strncpy(css_path, optarg, MAX_USER_SZ);
+                break;
+            default:
+                break;
         }
     }
     return TRUE;
@@ -58,40 +60,35 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
 gboolean set_paths(gboolean valid_conf, char *cfg_path, char *css_path) {
     const char *home = getenv("HOME");
     const char *xdg_config_home = getenv("XDG_CONFIG_HOME");
-    size_t home_len = strlen(home);
-    size_t xdg_len = strlen(xdg_config_home);
+    char config[MAX_USER_SZ] = "";
+    char css[MAX_USER_SZ] = "";
     if (!valid_conf) {
         if (home) {
-            strncpy(cfg_path, home, home_len + 1);
-            strcat(cfg_path, "/.config/tschuss/");
-            strcat(cfg_path, cfg_file);
-
-            strncpy(css_path, home, home_len + 1);
-            strcat(css_path, "/.config/tschuss/");
-            strcat(css_path, css_file);
+            snprintf(config, MAX_USER_SZ, "%s/.config/tschuss/%s", home, cfg_file);
+            snprintf(css, MAX_USER_SZ, "%s/.config/tschuss/%s", home, css_file);
+            strncpy(cfg_path, config, MAX_USER_SZ);
+            strncpy(css_path, css, MAX_USER_SZ);
             return TRUE;
         }
         else if (xdg_config_home) {
-            strncpy(cfg_path, xdg_config_home, xdg_len + 1);
-            strcat(cfg_path, "/tschuss/");
-            strcat(cfg_path, cfg_file);
-            
-            strncpy(css_path, xdg_config_home, xdg_len + 1);
-            strcat(css_path, "/tschuss/");
-            strcat(css_path, css_file);
+            snprintf(config, MAX_USER_SZ, "%s/tschuss/%s", xdg_config_home, cfg_file);
+            snprintf(css, MAX_USER_SZ, "%s/tschuss/%s", xdg_config_home, css_file);
+            strncpy(cfg_path, config, MAX_USER_SZ);
+            strncpy(css_path, css, MAX_USER_SZ);
             return TRUE;
         }
         else {
             fprintf(stderr, "Environment variable HOME and XDG_CONFIG_HOME are not set."
                     "\nPlease fix your configuration. Aborting the process.\n");
+            return FALSE;
         }
-        return FALSE;
     }
+    return TRUE;
 }
 
 int load_css(const char *css_path) {
     if (access(css_path, F_OK) == -1) {
-        fprintf(stderr, "\nNo '%s' file found.\n", css_path);
+        fprintf(stderr, "%s:syntax error\n", css_path);
         return -1;
     }
 
@@ -117,8 +114,8 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
     config_init(&cfg);
 
     if (!config_read_file(&cfg, cfg_path)) {
-        fprintf(stderr, "%s:%d - %s\nConfig file '%s' not found\n", config_error_file(&cfg),
-                config_error_line(&cfg), config_error_text(&cfg), cfg_path);
+        fprintf(stderr, "%s:%d - %s\n", config_error_file(&cfg),
+                config_error_line(&cfg), config_error_text(&cfg));
         config_destroy(&cfg);
         return -1;
     }

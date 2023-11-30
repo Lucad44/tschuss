@@ -7,7 +7,7 @@
 #define CONF_H
 
 #define N 6
-#define MAX_USER_SZ 32
+#define MAX_USER_SZ 96
 
 static const char *cfg_file = "tschuss.conf";
 static const char *css_file = "style.css";

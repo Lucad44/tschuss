@@ -30,13 +30,15 @@ void gen_buttons(GtkWidget *grid, struct Config *st) {
         if (!buttons_cfg[i]->selected) {
             continue;
         }
-        buttons[i] = gtk_button_new_with_label(buttons_cfg[i]->label);
-        gtk_widget_set_size_request(buttons[i], 1, 1);
-        gtk_widget_set_name(buttons[i], button_names[i]);
-        gtk_widget_set_hexpand(buttons[i], TRUE);
-        gtk_widget_set_vexpand(buttons[i], TRUE);
-        g_signal_connect(buttons[i], "clicked", G_CALLBACK(button_clicked), buttons_cfg[i]->action);
-        gtk_grid_attach(GTK_GRID(grid), buttons[i], j % st->columns, j / st->columns + 1, 1, 1);
+        if (!buttons_cfg[i]->invisible) {
+            buttons[i] = gtk_button_new_with_label(buttons_cfg[i]->label);
+            gtk_widget_set_size_request(buttons[i], 1, 1);
+            gtk_widget_set_name(buttons[i], button_names[i]);
+            gtk_widget_set_hexpand(buttons[i], TRUE);
+            gtk_widget_set_vexpand(buttons[i], TRUE);
+            g_signal_connect(buttons[i], "clicked", G_CALLBACK(button_clicked), buttons_cfg[i]->action);
+            gtk_grid_attach(GTK_GRID(grid), buttons[i], j % st->columns, j / st->columns + 1, 1, 1);
+        }
         j++;
     }
 }

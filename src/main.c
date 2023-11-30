@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Invalid config and/or css files. Trying to use the default ones instead.\n");
         set_paths(FALSE, cfg_path, css_path);
         if (read_cfg(cfg_path, &config, buttons_cfg) == -1 || load_css(css_path) == -1) {
-            fprintf(stderr, "No/invalid default config and/or css files found. Exiting.\n");
+            fprintf(stderr, "No/invalid default config and/or css files. Exiting.\n");
             return -1;
         }
     }

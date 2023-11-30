@@ -8,6 +8,7 @@
 
 #define N 6
 #define MAX_USER_SZ 96
+#define OPTIONS_NUM 5
 
 static const char *cfg_file = "tschuss.conf";
 static const char *css_file = "style.css";
@@ -29,6 +30,7 @@ typedef struct {
     char *label;
     char *action;
     bool selected;
+    bool invisible;
     guint bind;
 } button;
 

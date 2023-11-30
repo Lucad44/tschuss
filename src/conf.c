@@ -159,20 +159,35 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
         fprintf(stderr, "No/invalid x and y values. Using the default position instead.\n");
     }
     for (int i = 0; i < N; ++i) {
+        int valid_options[OPTIONS_NUM];
         config_setting_t *setting = config_lookup(&cfg, button_names[i]);
         if (setting != NULL) {
-            const char *label = config_setting_get_string_elem(setting, 0);
+            const char *label;
+            valid_options[0] = config_setting_lookup_string(setting, "label", &label);
             size_t label_len = strlen(label);
-            buttons_cfg[i]->label = malloc(sizeof(char) * (label_len + 1));
+            buttons_cfg[i]->label = malloc((label_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->label, label, label_len + 1);
 
-            const char *action = config_setting_get_string_elem(setting, 1);
+            const char *action;
+            valid_options[1] = config_setting_lookup_string(setting, "action", &action);
             size_t action_len = strlen(action);
-            buttons_cfg[i]->action = malloc(sizeof(char) * (action_len + 1));
+            buttons_cfg[i]->action = malloc((action_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->action, action, action_len + 1);
 
-            buttons_cfg[i]->selected = config_setting_get_bool_elem(setting, 2);
-            buttons_cfg[i]->bind = (guint) config_setting_get_int_elem(setting, 3);
+            int sel, inv, bind;
+            valid_options[2] = config_setting_lookup_bool(setting, "selected", &sel);
+            valid_options[3] = config_setting_lookup_bool(setting, "invisible", &inv);
+            valid_options[4] = config_setting_lookup_int(setting, "bind", &bind);
+            buttons_cfg[i]->selected = (bool) sel;
+            buttons_cfg[i]->invisible = (bool) inv;
+            buttons_cfg[i]->bind = (guint) bind;
+
+            for (int j = 0; j < OPTIONS_NUM; ++j) {
+                if (!valid_options[j]) {
+                    fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
+                    return -1;
+                }
+            }
         }
         else {
             fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);

@@ -10,7 +10,7 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
     static struct option long_options[] = {
         {"help", no_argument, NULL, 'h'},
         {"version", no_argument, NULL, 'v'},
-        {"config-file", required_argument, NULL, 't'},
+        {"config-file", required_argument, NULL, 'c'},
         {"css-file", required_argument, NULL, 's'},
         {NULL, 0, NULL, 0}    
     };
@@ -21,12 +21,13 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
         "\n"
         "  -h, --help                  Show an help message and exit.\n"
         "  -v, --version               Show the current version and exit.\n"
-        "  -t, --config-file <conf>    Enter the path to the config file. If no path is given, the default path shall be used.\n"
+        "  -c, --config-file <conf>    Enter the path to the config file. If no path is given, the default path shall be used.\n"
         "  -s, --css-file <css>        Enter the path to the css file. If no path is given, the default path shall be used.\n"
         "All the other config and style options are set and configured in the configuration and .css files.\n";
 
     int c;
-    while ((c = getopt(argc, argv, "t:s:hv")) != -1) {
+    int option_index = 0;
+    while ((c = getopt_long(argc, argv, "t:s:hv", long_options, &option_index)) != -1) {
         switch (c) {
             case 'h':
                 g_print("%s\n", help);
@@ -50,6 +51,8 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
                 g_print("\n%s", optarg);
                 strncpy(css_path, optarg, MAX_USER_SZ);
                 break;
+            case '?':
+                return FALSE;
             default:
                 break;
         }
@@ -168,16 +171,22 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
             buttons_cfg[i]->label = malloc((label_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->label, label, label_len + 1);
 
+            const char *description;
+            valid_options[1] = config_setting_lookup_string(setting, "description", &description);
+            size_t description_len = strlen(description);
+            buttons_cfg[i]->description = malloc((description_len + 1) * sizeof(char));
+            strncpy(buttons_cfg[i]->description, description, description_len + 1);
+
             const char *action;
-            valid_options[1] = config_setting_lookup_string(setting, "action", &action);
+            valid_options[2] = config_setting_lookup_string(setting, "action", &action);
             size_t action_len = strlen(action);
             buttons_cfg[i]->action = malloc((action_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->action, action, action_len + 1);
 
             int sel, inv, bind;
-            valid_options[2] = config_setting_lookup_bool(setting, "selected", &sel);
-            valid_options[3] = config_setting_lookup_bool(setting, "invisible", &inv);
-            valid_options[4] = config_setting_lookup_int(setting, "bind", &bind);
+            valid_options[3] = config_setting_lookup_bool(setting, "selected", &sel);
+            valid_options[4] = config_setting_lookup_bool(setting, "invisible", &inv);
+            valid_options[5] = config_setting_lookup_int(setting, "bind", &bind);
             buttons_cfg[i]->selected = (bool) sel;
             buttons_cfg[i]->invisible = (bool) inv;
             buttons_cfg[i]->bind = (guint) bind;

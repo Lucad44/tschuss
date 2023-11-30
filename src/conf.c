@@ -2,8 +2,92 @@
 #include <gtk/gtk.h>
 #include <libconfig.h>
 #include <string.h>
+#include <getopt.h>
 
 #include "conf.h"
+
+gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
+    static struct option long_options[] = {
+        {"help", no_argument, NULL, 'h'},
+        {"version", no_argument, NULL, 'v'},
+        {"config-file", required_argument, NULL, 't'},
+        {"css-file", required_argument, NULL, 's'},
+        {NULL, 0, NULL, 0}    
+    };
+
+    const char *version = "1.6.0";
+    const char *help = 
+        "Usage: tschuss [options]\n"
+        "\n"
+        "  -h, --help                  Show an help message and exit.\n"
+        "  -v, --version               Show the current version and exit.\n"
+        "  -t, --config-file <conf>    Enter the path to the config file. If no path is given, the default path shall be used.\n"
+        "  -s, --css-file <css>        Enter the path to the css file. If no path is given, the default path shall be used.\n"
+        "All the other config and style options are set and configured in the configuration and .css files.\n";
+
+    int c;
+    while ((c = getopt(argc, argv, "t:s:hv")) != -1) {
+        switch (c) {
+        case 'h':
+            g_print("%s\n", help);
+            return FALSE;
+        case 'v':
+            g_print("tschuss's current version: %s\n", version);
+            return FALSE;
+        case 't':
+            if (access(optarg, F_OK) == -1) {
+                fprintf(stderr, "Invalid path. Using the default one instead.\n");
+                return FALSE;
+            }
+            //cfg_path = g_strdup(optarg);
+            g_print("%s\n", "bonjour");
+            break;
+        case 's':
+            if (access(optarg, F_OK) == -1) {
+                fprintf(stderr, "Invalid path. Using the default one instead.\n");
+                return FALSE;
+            }
+            //css_path = g_strdup(optarg);
+            g_print("%s\n", "bonjour");
+            break;
+        }
+    }
+    return TRUE;
+}
+
+gboolean set_paths(gboolean valid_conf, char *cfg_path, char *css_path) {
+    const char *home = getenv("HOME");
+    const char *xdg_config_home = getenv("XDG_CONFIG_HOME");
+    size_t home_len = strlen(home);
+    size_t xdg_len = strlen(xdg_config_home);
+    if (!valid_conf) {
+        if (home) {
+            strncpy(cfg_path, home, home_len + 1);
+            strcat(cfg_path, "/.config/tschuss/");
+            strcat(cfg_path, cfg_file);
+
+            strncpy(css_path, home, home_len + 1);
+            strcat(css_path, "/.config/tschuss/");
+            strcat(css_path, css_file);
+            return TRUE;
+        }
+        else if (xdg_config_home) {
+            strncpy(cfg_path, xdg_config_home, xdg_len + 1);
+            strcat(cfg_path, "/tschuss/");
+            strcat(cfg_path, cfg_file);
+            
+            strncpy(css_path, xdg_config_home, xdg_len + 1);
+            strcat(css_path, "/tschuss/");
+            strcat(css_path, css_file);
+            return TRUE;
+        }
+        else {
+            fprintf(stderr, "Environment variable HOME and XDG_CONFIG_HOME are not set."
+                    "\nPlease fix your configuration. Aborting the process.\n");
+        }
+        return FALSE;
+    }
+}
 
 int load_css(const char *css_path) {
     if (access(css_path, F_OK) == -1) {

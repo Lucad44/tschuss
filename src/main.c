@@ -2,29 +2,18 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <stdbool.h>
+#include <getopt.h>
 
 #include "buttons.h"
 #include "conf.h"
 
-#define MAX_USER_SZ 32
-
 int main(int argc, char *argv[]) {
-    char cfg_path[MAX_USER_SZ + 64] = "";
-    char css_path[MAX_USER_SZ + 64] = "";
-    const char *home = getenv("HOME");
-    const char *xdg_config_home = getenv("XDG_CONFIG_HOME");
+    char *cfg_path = malloc((MAX_USER_SZ + 64) * sizeof(char));
+    char *css_path = malloc((MAX_USER_SZ + 64) * sizeof(char));
 
-    if (home) {
-        snprintf(cfg_path, sizeof(cfg_path), "%s/.config/tschuss/%s", home, cfg_file);
-        snprintf(css_path, sizeof(css_path), "%s/.config/tschuss/%s", home, css_file);
-    }
-    else if (xdg_config_home) {
-        snprintf(cfg_path, sizeof(cfg_path), "%s/tschuss/%s", xdg_config_home, cfg_file);
-        snprintf(css_path, sizeof(css_path), "%s/tschuss/%s", xdg_config_home, css_file);
-    }
-    else {
-        fprintf(stderr, "Environment variable HOME and XDG_CONFIG_HOME are not set."
-                "\nPlease fix your configuration. Aborting the process.\n");
+    gboolean valid_conf = get_cmd_args(argc, argv, cfg_path, css_path);
+    gboolean valid_paths = set_paths(valid_conf, cfg_path, css_path);
+    if (!valid_paths) {
         return -1;
     }
 
@@ -75,7 +64,7 @@ int main(int argc, char *argv[]) {
 
     const char *action;
     action = get_command();
-    g_print("\n%s", action);
+    system(action);
 
     free(command);
     free(config.top_text);

@@ -7,6 +7,7 @@
 #define CONF_H
 
 #define N 6
+#define MAX_USER_SZ 32
 
 static const char *cfg_file = "tschuss.conf";
 static const char *css_file = "style.css";
@@ -30,6 +31,10 @@ typedef struct {
     bool selected;
     guint bind;
 } button;
+
+gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path);
+
+gboolean set_paths(gboolean valid_conf, char *cfg_path, char *css_path);
 
 int load_css(const char *css_file);
 

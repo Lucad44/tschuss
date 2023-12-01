@@ -1,6 +1,29 @@
-# tschuss
+## tschuss
 Simple and fast customisable dropdown power menu for Linux systems.
 Please read the instructions below in order to configure it and customise it properly.
+
+## Dependencies
+
+# Build dependencies
+
+* GTK+
+* GObject Introspection
+* libconfig
+* gtk-layer-shell (optional)
+
+## Installation
+
+# Meson
+
+Just run these commands in the terminal. Be sure to have `git` and `meson` and `ninja` installed.
+
+```
+git clone https://github.com/Lucad44/tschuss
+cd tschuss
+meson setup build
+ninja -C build
+sudo ninja -C build install
+```
 
 # Run
 
@@ -10,7 +33,9 @@ Run `tschuss` and exit via the `ESC` key.
 
 There currently are 5 command line options. You can find out about them via the `--help` option.
 
-# Customisation - CSS
+## Customisation
+
+# CSS
 Modify the `style.css` file in order to change the colour, background, font, raidiuses, borders and everything else CSS-related.
 
 There's a `#window` label that allows you to customise the main window where everything is placed upon.
@@ -25,7 +50,7 @@ If you need to modify all the `button` category at once, there's a `button` (**W
 
 The `#top-text` `#bottom-text` refer instead to the paragraph you can add above or under respectively the button grid.
 
-# Configuration
+## Configuration
 
 Edit the `tschuss.conf` configuration file, in order to modify the window's and button grid's properties.
 
@@ -36,21 +61,27 @@ Here's a full list of all the options:
 # Window options
 
 **Height** (`height`)
+
 The height of the current windows.
 
 **Width** (`width`)
+
 Same thing, but in the other direction.
 
 **Border width** (`border width`)
+
 The distance between the button grid and the window external border.
 
 **Columns** (`columns`)
+
 The number of columns which will be present in the grid. Keep in mind that this will also affect the number of buttons per row. The value should be in the range [1-6], otherwise the default one (2) will be used.
 
 **Top paragraph** (`top_text`)
+
 Add a paragraph above the button grid (a title for example). If you don't want it just set the option to `""`.
 
 **Bottom paragraph** (`bottom_text`)
+
 Same thing as above, but below the grid this time.
 
 # Button options
@@ -97,7 +128,7 @@ Check out https://en.wikipedia.org/wiki/ASCII for more information.
 NOTE that the `ESC` key (27) is reserved for exiting the program.
 
 
-# Final notes and troubleshooting
+## Final notes and troubleshooting
 
 **IMPORTANT**
 

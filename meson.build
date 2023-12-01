@@ -16,6 +16,7 @@ src = [
 
 project_dependencies = [
     dependency('gtk+-3.0', method: 'pkg-config'),
+    dependency('gtk-layer-shell-0', required: false),
     dependency('libconfig')
 ]
 

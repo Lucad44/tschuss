@@ -1,19 +1,19 @@
-## tschuss
+# tschuss
 Simple and fast customisable dropdown power menu for Linux systems.
 Please read the instructions below in order to configure it and customise it properly.
 
-## Dependencies
+# Dependencies
 
-# Build dependencies
+## Build dependencies
 
 * GTK+
 * GObject Introspection
 * libconfig
 * gtk-layer-shell (optional)
 
-## Installation
+# Installation
 
-# Meson
+## Meson
 
 Just run these commands in the terminal. Be sure to have `git` and `meson` and `ninja` installed.
 
@@ -33,9 +33,9 @@ Run `tschuss` and exit via the `ESC` key.
 
 There currently are 5 command line options. You can find out about them via the `--help` option.
 
-## Customisation
+# Customisation
 
-# CSS
+## CSS
 Modify the `style.css` file in order to change the colour, background, font, raidiuses, borders and everything else CSS-related.
 
 There's a `#window` label that allows you to customise the main window where everything is placed upon.
@@ -50,7 +50,7 @@ If you need to modify all the `button` category at once, there's a `button` (**W
 
 The `#top-text` `#bottom-text` refer instead to the paragraph you can add above or under respectively the button grid.
 
-## Configuration
+# Configuration
 
 Edit the `tschuss.conf` configuration file, in order to modify the window's and button grid's properties.
 
@@ -58,7 +58,7 @@ The default path for the config file is `~/.config/tschuss/tschuss.conf`, but yo
 
 Here's a full list of all the options:
 
-# Window options
+## Window options
 
 **Height** (`height`)
 
@@ -84,7 +84,7 @@ Add a paragraph above the button grid (a title for example). If you don't want i
 
 Same thing as above, but below the grid this time.
 
-# Button options
+## Button options
 
 Remember that you can set a different option for every button.
 
@@ -128,7 +128,7 @@ Check out https://en.wikipedia.org/wiki/ASCII for more information.
 NOTE that the `ESC` key (27) is reserved for exiting the program.
 
 
-## Final notes and troubleshooting
+# Final notes and troubleshooting
 
 **IMPORTANT**
 

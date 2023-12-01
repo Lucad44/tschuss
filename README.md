@@ -90,7 +90,7 @@ A boolean value. Similar to the `selected` option, but the buttons won't be shif
 
 **Bind** (`bind`)
 
-Set a key to execute the `action` command when the program is open. As of now, you must use an ASCII (and not UNICODE) character, and write it in the config as an integer, corresponding to its value on the ASCII table. For example `'a'` should be written as '97' in the config.
+Set a key to execute the `action` command when the program is open. As of now, you must use an ASCII (and not UNICODE) character, and write it in the config as an integer, corresponding to its value on the ASCII table. For example `'a'` should be written as `'97'` in the config.
 Check out https://en.wikipedia.org/wiki/ASCII for more information.
 NOTE that the `ESC` key (27) is reserved for exiting the program.
 

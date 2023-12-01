@@ -1,0 +1,112 @@
+#window {
+    background-color: rgba(5, 17, 29, 0.877)
+}
+
+button {
+    background-color: rgba(32, 34, 36, 0.2);
+    color: white;
+    border: solid;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-size: 130px;
+}
+
+#top-text {
+    font-weight: bold;
+}
+
+#title-shutdown {
+    color: rgb(22, 109, 185);
+    font-size: 40px
+}
+
+#label-shutdown {
+    color: rgb(214, 34, 34);
+    font-size: 120px;
+}
+
+#description-shutdown {
+    color: rgb(255, 115, 0);
+    font-size: 40px;
+}
+
+#title-reboot {
+    color: rgb(151, 33, 160);
+    font-size: 40px
+}
+
+#label-reboot {
+    color: rgb(34, 178, 214);
+    font-size: 120px;
+}
+
+#description-reboot {
+    color: rgb(0, 255, 149);
+    font-size: 40px;
+}
+
+#title-logout {
+    color: rgb(106, 179, 111);
+    font-size: 40px
+}
+
+#label-logout {
+    color: darkgreen;
+    font-size: 120px;
+}
+
+#description-logout {
+    color: darkolivegreen;
+    font-size: 40px;
+}
+
+#title-suspend {
+    color: rgb(177, 98, 145);
+    font-size: 40px
+}
+
+#label-suspend {
+    color: rgb(177, 153, 184);
+    font-size: 120px;
+}
+
+#description-suspend {
+    color: rgb(131, 95, 66);
+    font-size: 40px;
+}
+
+#title-hibernate {
+    color: rgb(218, 12, 135);
+    font-size: 40px
+}
+
+#label-hibernate {
+    color: rgb(34, 76, 214);
+    font-size: 120px;
+}
+
+#description-hibernate {
+    color: rgb(204, 0, 255);
+    font-size: 40px;
+}
+
+#title-lock {
+    color: rgb(228, 200, 20);
+    font-size: 40px
+}
+
+#label-lock {
+    color: rgb(214, 202, 34);
+    font-size: 120px;
+}
+
+#description-lock {
+    color: rgb(136, 255, 0);
+    font-size: 40px;
+}
+
+
+
+

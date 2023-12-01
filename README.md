@@ -2,40 +2,119 @@
 Simple and fast customisable dropdown power menu for Linux systems.
 Please read the instructions below in order to configure it and customise it properly.
 
+# Run
+
+Run `tschuss` and exit via the `ESC` key.
+
+# Command line options
+
+There currently are 5 command line options. You can find out about them via the `--help` option.
+
 # Customisation - CSS
-Modify the `style.css` file in order to change the colour, background, font, borders and everything else CSS-related.
+Modify the `style.css` file in order to change the colour, background, font, raidiuses, borders and everything else CSS-related.
 
 There's a `#window` label that allows you to customise the main window where everything is placed upon.
 
-Then there are 5 button labels (namely `#button-shutdown`, `#button-reboot`, `#button-logout`, `#button-hibernate` and `#button-suspend`) 
-whose properties you can edit in order to modify each of the 5 buttons individually. 
+Then there are 6 button labels (namely `#shutdown`, `#reboot`, `#logout`, `#hibernate` and `#suspend`) 
+whose properties you can edit in order to modify each of the 6 buttons individually. 
 
-If you need to modify all the `button` category at once, there's a `button` (**W/O** the '#', otherwise it won't work) label which shall suit your needs.
+All the other single button labels inherit from this names, with a single hyphen in the middle.
+For example, `#shutdown-title` to edit the text in the top of the button, `#shutdown-label` to edit the main label in the centre and `#shutdown-description` to edit the text under the main label.
 
-If you wish you can modify and rebuild the c-code directly if you need to change the labels' names, or make any other change.
+If you need to modify all the `button` category at once, there's a `button` (**W/O** the '#') label which shall suit your needs.
+
+The `#top-text` `#bottom-text` refer instead to the paragraph you can add above or under respectively the button grid.
 
 # Configuration
-Edit the `tschuss.conf` configuration file, where you'll be able to to modify the size, ability to move it with your cursor and more.
 
-**Location**
+Edit the `tschuss.conf` configuration file, in order to modify the window's and button grid's properties.
 
-There are 9 possible locations which can be specified either by name or by number, the corresponding number is listed next to the names below, the default is centre.
-1. center 0
-2. top_left 1
-3. top 2
-4. top_right 3
-5. right 4
-6. bottom_right 5
-7. bottom 6
-8. bottom_left 7
-9. left 8 
+The default path for the config file is `~/.config/tschuss/tschuss.conf`, but you can set any path via the `--config-file` command line option, altough not recommended. 
 
-In order to edit the location, you must insert a parameter (0-8 or the text equivalent) after the launch tschuss command.
+Here's a full list of all the options:
 
-For example:
+# Window options
 
-    `tschuss 1`
+**Height** (`height`)
+The height of the current windows.
 
-if you wish to launch it in the top-left corner.
+**Width** (`width`)
+Same thing, but in the other direction.
 
-I highly recommend either setting up an hotkey to open the dropdown menu or a designated button. Check your desktop entry wiki if you don't know how to do that.
+**Border width** (`border width`)
+The distance between the button grid and the window external border.
+
+**Columns** (`columns`)
+The number of columns which will be present in the grid. Keep in mind that this will also affect the number of buttons per row. The value should be in the range [1-6], otherwise the default one (2) will be used.
+
+**Top paragraph** (`top_text`)
+Add a paragraph above the button grid (a title for example). If you don't want it just set the option to `""`.
+
+**Bottom paragraph** (`bottom_text`)
+Same thing as above, but below the grid this time.
+
+# Button options
+
+Remember that you can set a different option for every button.
+
+If you should set any of the following text options to `""` in order to turn them off, they shan't be displayed and the spacing and height will be fixed accordingly, so don't worry about it.
+
+**Title** (`title`)
+
+Text which will be positioned in the top third of the button. 
+
+
+**Label** (`label`)
+
+Text which will be positioned in the middle of the button. 
+
+**Description** (`description`)
+
+Text which will be position in the bottom third of the button.
+
+**Action** (`action`)
+
+The command which will be executed on the button press. There aren't any safety checks, so please don't do anything stupid (the string is parsed directly with the `system` function).
+
+**Style** (`style`)
+
+The style context of the button. As of now, the only two valid options are "circular" and "flat" (default). 
+
+**Selected** (`style`)
+
+A boolean value. Set it to `true` to turn on the button, otherwise the button which will be skipped and the next buttons shifted one position back, in order to not leave any holes.
+
+**Invisible** (`invisible`)
+
+A boolean value. Similar to the `selected` option, but the buttons won't be shifted back with this option. The two options are NOT mutually exclusive.
+
+**Bind** (`bind`)
+
+Set a key to execute the `action` command when the program is open. As of now, you must use an ASCII (and not UNICODE) character, and write it in the config as an integer, corresponding to its value on the ASCII table. For example `'a'` should be written as '97' in the config.
+Check out https://en.wikipedia.org/wiki/ASCII for more information.
+NOTE that the `ESC` key (27) is reserved for exiting the program.
+
+
+# Final notes and troubleshooting
+
+**IMPORTANT**
+
+Keep in mind that as of now, ALL the values in the configuration must be set to something for the program to start, otherwise it will output an error. In the future I'll probably make some of the configurations optional and add default values for them as well.
+
+**Transparent background**
+
+I haven't had the possibility to check it myself, but you should be able to set a background transparecny via the CSS file on X11.
+
+Instead if your system is running on, for example, Wayland, you must do it from your display server configuration file.
+For example, on Hyprland you can add in your `hyprland.conf` config file this line:
+`windowrule = opacity <opacity value> override,^(Tschuss)$`
+
+**Moving the window to a certain position**
+
+Again, you must do this from your display server's configuration. 
+In Hyprland, for example, you could do:
+`windowrule = move <x pixel> <y pixel>,^(Tschuss)$`
+Keep in mind that coordinates are referring to bottom-left corner of the window on Hyprland.
+If you need more information, look it up on your display server's wiki.
+I'm fairly certain I could add the option to specify the coordinates directly in the program on X11, I'll eventually release an update if that's the case.
+

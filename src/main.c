@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
             return -1;
         }
     }
-
+    
     gtk_window_set_title(GTK_WINDOW(window), "tschuss");
     gtk_widget_set_size_request(window, config.width, config.height);
     gtk_container_set_border_width(GTK_CONTAINER(window), config.border_width);

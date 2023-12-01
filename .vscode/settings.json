@@ -10,5 +10,6 @@
         "stdbool.h": "c",
         "libconfig.h": "c"
     },
-    "glassit.alpha": 150
+    "glassit.alpha": 150,
+    "C_Cpp.default.compileCommands": "/home/lucad/Documents/Coding/tschuss/builddir/compile_commands.json"
 }

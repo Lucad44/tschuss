@@ -61,6 +61,13 @@ void gen_buttons(GtkWidget *grid, struct Config *st) {
                 make_label(vbox, "description", buttons_cfg[i]->description, descriptions, i);
             }
 
+            if (!strcmp(buttons_cfg[i]->style, "circular")) {
+                gtk_style_context_add_class(gtk_widget_get_style_context(buttons[i]), "circular");
+            }
+            else {
+                gtk_style_context_add_class(gtk_widget_get_style_context(buttons[i]), "flat");
+            }
+
             g_signal_connect(buttons[i], "clicked", G_CALLBACK(button_clicked), buttons_cfg[i]->action);
             gtk_grid_attach(GTK_GRID(grid), buttons[i], j % st->columns, j / st->columns + 1, 1, 1);
         }

@@ -204,10 +204,16 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
             buttons_cfg[i]->action = malloc((action_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->action, action, action_len + 1);
 
+            const char *style;
+            valid_options[4] = config_setting_lookup_string(setting, "style", &style);
+            size_t style_len = strlen(style);
+            buttons_cfg[i]->style = malloc((style_len + 1) * sizeof(char));
+            strncpy(buttons_cfg[i]->style, style, style_len + 1);
+
             int sel, inv, bind;
-            valid_options[4] = config_setting_lookup_bool(setting, "selected", &sel);
-            valid_options[5] = config_setting_lookup_bool(setting, "invisible", &inv);
-            valid_options[6] = config_setting_lookup_int(setting, "bind", &bind);
+            valid_options[5] = config_setting_lookup_bool(setting, "selected", &sel);
+            valid_options[6] = config_setting_lookup_bool(setting, "invisible", &inv);
+            valid_options[7] = config_setting_lookup_int(setting, "bind", &bind);
             buttons_cfg[i]->selected = (bool) sel;
             buttons_cfg[i]->invisible = (bool) inv;
             buttons_cfg[i]->bind = (guint) bind;

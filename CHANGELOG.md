@@ -1,23 +1,22 @@
-# Version 1.3.1
+# Version 1.5.1
+
+Images in buttons coming soon.
 
 ## New Features
-- Completely restructured the config file, much easier to browse and use 
+- New title option
+- New style option
+- New description option
 - You can now set a keybind for every command
 - You can now set a custom commmand for each button, as well a custom label
 
 ### Config options
-- Added many more config options such as:
-- `shutdown`
-- `reboot`
-- `logout`
-- `hibernate`
-- `suspend`
-- `lock`
+- You can now set the config in any order
+- Default path will be used if you don't insert one, instead of crashing
 
 ## Bug fixes
 - Added more safety features
 - Nerd fonts displayed properly now
-- Lock command now working properly
+- No more segfaults!
 
 ---
 

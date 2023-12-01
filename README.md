@@ -25,6 +25,11 @@ ninja -C build
 sudo ninja -C build install
 ```
 
+The executable file will be in found in `.../tschuss/build/`.
+
+A default configuration and a default CSS file will be placed in the `/etc/tschuss/` folder. You should copy those files to a path of your liking (default one recommended).
+
+
 # Run
 
 Run `tschuss` and exit via the `ESC` key.

@@ -1,5 +1,5 @@
 # tschuss
-Simple and fast customisable dropdown power menu for Linux systems.
+Simple and fast highly customisable dropdown power menu for Linux systems.
 Please read the instructions below in order to configure it and customise it properly.
 
 # Dependencies

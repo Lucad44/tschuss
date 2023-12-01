@@ -7,19 +7,25 @@
 #include "buttons.h"
 #include "conf.h"
 
+bool quiet = false;
+
 int main(int argc, char *argv[]) {
     char *cfg_path = malloc(MAX_USER_SZ * sizeof(char));
     char *css_path = malloc(MAX_USER_SZ * sizeof(char));
 
-    gboolean valid_args = get_cmd_args(argc, argv, cfg_path, css_path);
+    int valid_args = get_cmd_args(argc, argv, cfg_path, css_path);
     if (!valid_args) {
         return 1;
     }
+    else if (valid_args >= 2) {
+        quiet = true;
+    }
     if (strcmp(cfg_path, "") == 0 || strcmp(css_path, "") == 0) {
-        fprintf(stderr, "No path entered. Using the default one instead.\n");
+        if (!quiet)
+            fprintf(stderr, "No path entered. Using the default one instead.\n");
         valid_args = FALSE;
     }
-    gboolean valid_paths = set_paths(valid_args, cfg_path, css_path);
+    bool valid_paths = set_paths(valid_args, cfg_path, css_path);
     if (!valid_paths) {
         return -1;
     }
@@ -36,10 +42,12 @@ int main(int argc, char *argv[]) {
     }
 
     if (read_cfg(cfg_path, &config, buttons_cfg) == -1 || load_css(css_path) == -1) {
-        fprintf(stderr, "Invalid config and/or css files. Trying to use the default ones instead.\n");
+        if (!quiet)
+            fprintf(stderr, "Invalid config and/or css files. Trying to use the default ones instead.\n");
         set_paths(FALSE, cfg_path, css_path);
         if (read_cfg(cfg_path, &config, buttons_cfg) == -1 || load_css(css_path) == -1) {
-            fprintf(stderr, "No/invalid default config and/or css files. Exiting.\n");
+            if (!quiet)
+                fprintf(stderr, "No/invalid default config and/or css files. Exiting.\n");
             return -1;
         }
     }

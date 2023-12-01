@@ -6,10 +6,11 @@
 
 #include "conf.h"
 
-gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
+int get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
     static struct option long_options[] = {
         {"help", no_argument, NULL, 'h'},
         {"version", no_argument, NULL, 'v'},
+        {"quiet", no_argument, NULL, 'q'},
         {"config-file", required_argument, NULL, 'c'},
         {"css-file", required_argument, NULL, 's'},
         {NULL, 0, NULL, 0}    
@@ -21,24 +22,29 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
         "\n"
         "  -h, --help                  Show an help message and exit.\n"
         "  -v, --version               Show the current version and exit.\n"
+        "  -q, --quiet                 Suppress all errors in the stdout (not recommended).\n"
         "  -c, --config-file <conf>    Enter the path to the config file. If no path is given, the default path shall be used.\n"
         "  -s, --css-file <css>        Enter the path to the css file. If no path is given, the default path shall be used.\n"
         "All the other config and style options are set and configured in the configuration and .css files.\n";
 
     int c;
     int option_index = 0;
-    while ((c = getopt_long(argc, argv, "c:s:hv", long_options, &option_index)) != -1) {
+    int quiet_flag = 0;
+    while ((c = getopt_long(argc, argv, "c:s:hvq", long_options, &option_index)) != -1) {
         switch (c) {
             case 'h':
                 g_print("%s\n", help);
-                return FALSE;
+                return 0;
             case 'v':
                 g_print("tschuss's current version: %s\n", version);
-                return FALSE;
+                return 0;
+            case 'q':
+                quiet_flag++;
+                break;
             case 'c':
                 if (access(optarg, F_OK) == -1) {
                     fprintf(stderr, "Invalid path. Using the default one instead.\n");
-                    return FALSE;
+                    return 0;
                 }
                 g_print("\n%s", optarg);
                 strncpy(cfg_path, optarg, MAX_USER_SZ);
@@ -46,21 +52,21 @@ gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path) {
             case 's':
                 if (access(optarg, F_OK) == -1) {
                     fprintf(stderr, "Invalid path. Using the default one instead.\n");
-                    return FALSE;
+                    return 0;
                 }
                 g_print("\n%s", optarg);
                 strncpy(css_path, optarg, MAX_USER_SZ);
                 break;
             case '?':
-                return FALSE;
+                return 0;
             default:
                 break;
         }
     }
-    return TRUE;
+    return 1 + quiet_flag;
 }
 
-gboolean set_paths(gboolean valid_conf, char *cfg_path, char *css_path) {
+bool set_paths(bool valid_conf, char *cfg_path, char *css_path) {
     const char *home = getenv("HOME");
     const char *xdg_config_home = getenv("XDG_CONFIG_HOME");
     char config[MAX_USER_SZ] = "";
@@ -71,27 +77,30 @@ gboolean set_paths(gboolean valid_conf, char *cfg_path, char *css_path) {
             snprintf(css, MAX_USER_SZ, "%s/.config/tschuss/%s", home, css_file);
             strncpy(cfg_path, config, MAX_USER_SZ);
             strncpy(css_path, css, MAX_USER_SZ);
-            return TRUE;
+            return true;
         }
         else if (xdg_config_home) {
             snprintf(config, MAX_USER_SZ, "%s/tschuss/%s", xdg_config_home, cfg_file);
             snprintf(css, MAX_USER_SZ, "%s/tschuss/%s", xdg_config_home, css_file);
             strncpy(cfg_path, config, MAX_USER_SZ);
             strncpy(css_path, css, MAX_USER_SZ);
-            return TRUE;
+            return true;
         }
         else {
-            fprintf(stderr, "Environment variable HOME and XDG_CONFIG_HOME are not set."
-                    "\nPlease fix your configuration. Aborting the process.\n");
-            return FALSE;
+            if (!quiet) {
+                fprintf(stderr, "Environment variable HOME and XDG_CONFIG_HOME are not set."
+                        "\nPlease fix your configuration. Aborting the process.\n");
+            }
+            return false;
         }
     }
-    return TRUE;
+    return true;
 }
 
 int load_css(const char *css_path) {
     if (access(css_path, F_OK) == -1) {
-        fprintf(stderr, "%s:syntax error\n", css_path);
+        if (!quiet)
+            fprintf(stderr, "%s:syntax error\n", css_path);
         return -1;
     }
 
@@ -117,8 +126,10 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
     config_init(&cfg);
 
     if (!config_read_file(&cfg, cfg_path)) {
-        fprintf(stderr, "%s:%d - %s\n", config_error_file(&cfg),
-                config_error_line(&cfg), config_error_text(&cfg));
+        if (!quiet) {
+            fprintf(stderr, "%s:%d - %s\n", config_error_file(&cfg),
+                    config_error_line(&cfg), config_error_text(&cfg));
+        }
         config_destroy(&cfg);
         return -1;
     }
@@ -128,12 +139,14 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
         config_lookup_int(&cfg, "border_width", &st->border_width) &&
         config_lookup_string(&cfg, "top_text", &top_text) &&
         config_lookup_string(&cfg, "bottom_text", &bottom_text))) {
-            fprintf(stderr, "Error in the '%s' config file: missing/invalid values.\n", cfg_path);
+            if (!quiet)
+                fprintf(stderr, "Error in the '%s' config file: missing/invalid values.\n", cfg_path);
             config_destroy(&cfg);
             return -1;
     }
     if (st->columns <= 0) {
-        fprintf(stderr, "Error in the '%s' config file: invalid 'columns' value");
+        if (!quiet)
+            fprintf(stderr, "Error in the '%s' config file: invalid 'columns' value");
         return -1;
     }
     
@@ -149,7 +162,8 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
         st->height = config_setting_get_int_elem(size, 1);
     }
     else {
-        fprintf(stderr, "Error in the 'position' configuration: invalid/missing values.\n");
+        if (!quiet)
+            fprintf(stderr, "Error in the 'position' configuration: invalid/missing values.\n");
         return -1;
     }
 
@@ -159,7 +173,8 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
         st->y = config_setting_get_int_elem(position, 1);
     }
     else {
-        fprintf(stderr, "No/invalid x and y values. Using the default position instead.\n");
+        if (!quiet)
+            fprintf(stderr, "No/invalid x and y values. Using the default position instead.\n");
     }
     for (int i = 0; i < N; ++i) {
         int valid_options[OPTIONS_NUM];
@@ -199,13 +214,15 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
 
             for (int j = 0; j < OPTIONS_NUM; ++j) {
                 if (!valid_options[j]) {
-                    fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
+                    if (!quiet)
+                        fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
                     return -1;
                 }
             }
         }
         else {
-            fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
+            if (!quiet)
+                fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
             return -1;
         }   
     }

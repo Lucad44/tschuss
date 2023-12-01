@@ -13,7 +13,9 @@
 static const char *cfg_file = "tschuss.conf";
 static const char *css_file = "style.css";
 
-static const char *button_names[] = {"shutdown", "reboot", "logout", "hibernate", "suspend", "lock"};
+static const char *button_names[N] = {"shutdown", "reboot", "logout", "hibernate", "suspend", "lock"};
+
+extern bool quiet;
 
 struct Config {
     int height;
@@ -36,9 +38,9 @@ typedef struct {
     guint bind;
 } button;
 
-gboolean get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path);
+int get_cmd_args(int argc, char *argv[], char *cfg_path, char *css_path);
 
-gboolean set_paths(gboolean valid_conf, char *cfg_path, char *css_path);
+bool set_paths(bool valid_conf, char *cfg_path, char *css_path);
 
 int load_css(const char *css_file);
 

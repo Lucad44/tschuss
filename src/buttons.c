@@ -51,14 +51,20 @@ void gen_buttons(GtkWidget *grid, struct Config *st) {
             GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
             gtk_container_add(GTK_CONTAINER(buttons[i]), vbox);
 
-            make_label(vbox, "title", buttons_cfg[i]->title, titles, i);
-            make_label(vbox, "label", buttons_cfg[i]->label, main_labels, i);
-            make_label(vbox, "description", buttons_cfg[i]->description, descriptions, i);
+            if (strcmp(buttons_cfg[i]->title, "")) {
+                make_label(vbox, "title", buttons_cfg[i]->title, titles, i);         
+            }
+            if (strcmp(buttons_cfg[i]->label, "")) {
+                make_label(vbox, "label", buttons_cfg[i]->label, main_labels, i);
+            }
+            if (strcmp(buttons_cfg[i]->description, "")) {
+                make_label(vbox, "description", buttons_cfg[i]->description, descriptions, i);
+            }
 
             g_signal_connect(buttons[i], "clicked", G_CALLBACK(button_clicked), buttons_cfg[i]->action);
             gtk_grid_attach(GTK_GRID(grid), buttons[i], j % st->columns, j / st->columns + 1, 1, 1);
         }
-        j++;
+        ++j;
     }
 }
 

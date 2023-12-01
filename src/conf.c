@@ -168,15 +168,6 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
         return -1;
     }
 
-    config_setting_t *position = config_lookup(&cfg, "position");
-    if (position != NULL) {
-        st->x = config_setting_get_int_elem(position, 0);
-        st->y = config_setting_get_int_elem(position, 1);
-    }
-    else {
-        if (!quiet)
-            fprintf(stderr, "No/invalid x and y values. Using the default position instead.\n");
-    }
     for (int i = 0; i < N; ++i) {
         int valid_options[OPTIONS_NUM];
         config_setting_t *setting = config_lookup(&cfg, button_names[i]);

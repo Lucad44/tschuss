@@ -68,7 +68,7 @@ The height of the current windows.
 
 Same thing, but in the other direction.
 
-**Border width** (`border width`)
+**Border width** (`border_width`)
 
 The distance between the button grid and the window external border.
 

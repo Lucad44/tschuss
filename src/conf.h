@@ -20,8 +20,6 @@ extern bool quiet;
 struct Config {
     int height;
     int width;
-    int x; 
-    int y;
     int border_width;
     int columns;
     char *top_text;

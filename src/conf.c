@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
-#include <gtk-layer-shell/gtk-layer-shell.h>
 #include <libconfig.h>
 #include <string.h>
 #include <getopt.h>

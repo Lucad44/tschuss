@@ -140,13 +140,16 @@ I haven't had the possibility to check it myself, but you should be able to set 
 
 Instead if your system is running on, for example, Wayland, you must do it from your display server configuration file.
 For example, on Hyprland you can add in your `hyprland.conf` config file this line:
+
 `windowrule = opacity <opacity value> override,^(Tschuss)$`
 
 **Moving the window to a certain position**
 
 Again, you must do this from your display server's configuration. 
 In Hyprland, for example, you could do:
+
 `windowrule = move <x pixel> <y pixel>,^(Tschuss)$`
+
 Keep in mind that coordinates are referring to bottom-left corner of the window on Hyprland.
 If you need more information, look it up on your display server's wiki.
 I'm fairly certain I could add the option to specify the coordinates directly in the program on X11, I'll eventually release an update if that's the case.

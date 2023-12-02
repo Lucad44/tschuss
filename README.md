@@ -6,6 +6,8 @@ Please read the instructions below in order to configure it and customise it pro
 
 ![example2](images/tschusssm.png)
 
+*Note: if you notice the 'icons' are not exactly centred, it's because I'm using Nerd Fonts in the example pictures, which sometimes glitch*
+
 # Dependencies
 
 ## Build dependencies

@@ -61,31 +61,33 @@ Edit the `tschuss.conf` configuration file, in order to modify the window's and 
 
 The default path for the config file is `~/.config/tschuss/tschuss.conf`, but you can set any path via the `--config-file` command line option, altough not recommended. 
 
+For all the options with the *optional* tag, a default setting will be used if none is found in the config file. Instead, the program will be aborted for missing/invalid values W/O the *optional* tag. 
+
 Here's a full list of all the options:
 
 ## Window options
 
-**Height** (`height`)
+**Height** (`height`, *optional*)
 
 The height of the current windows.
 
-**Width** (`width`)
+**Width** (`width`, *optional*)
 
 Same thing, but in the other direction.
 
-**Border width** (`border_width`)
+**Border width** (`border_width`, *optional*)
 
 The distance between the button grid and the window external border.
 
-**Columns** (`columns`)
+**Columns** (`columns`, *optional*)
 
 The number of columns which will be present in the grid. Keep in mind that this will also affect the number of buttons per row. The value should be in the range [1-6], otherwise the default one (2) will be used.
 
-**Top paragraph** (`top_text`)
+**Top paragraph** (`top_text`, *optional*)
 
 Add a paragraph above the button grid (a title for example). If you don't want it just set the option to `""`.
 
-**Bottom paragraph** (`bottom_text`)
+**Bottom paragraph** (`bottom_text`, *optional*)
 
 Same thing as above, but below the grid this time.
 
@@ -95,7 +97,7 @@ Remember that you can set a different option for every button.
 
 If you should set any of the following text options to `""` in order to turn them off, they shan't be displayed and the spacing and height will be fixed accordingly, so don't worry about it.
 
-**Title** (`title`)
+**Title** (`title`, *optional*)
 
 Text which will be positioned in the top third of the button. 
 
@@ -112,15 +114,15 @@ Text which will be position in the bottom third of the button.
 
 The command which will be executed on the button press. There aren't any safety checks, so please don't do anything stupid (the string is parsed directly with the `system` function).
 
-**Style** (`style`)
+**Style** (`style`, *optional*)
 
 The style context of the button. As of now, the only two valid options are "circular" and "flat" (default). 
 
-**Selected** (`style`)
+**Selected** (`style`, *optional*)
 
 A boolean value. Set it to `true` to turn on the button, otherwise the button which will be skipped and the next buttons shifted one position back, in order to not leave any holes.
 
-**Invisible** (`invisible`)
+**Invisible** (`invisible`, *optional*)
 
 A boolean value. Similar to the `selected` option, but the buttons won't be shifted back with this option.
 The two options are NOT mutually exclusive.

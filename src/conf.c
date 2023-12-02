@@ -134,48 +134,84 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
         return -1;
     }
 
-    const char *top_text, *bottom_text;
-    if (!(config_lookup_int(&cfg, "columns", &st->columns) &&
-        config_lookup_int(&cfg, "border_width", &st->border_width) &&
-        config_lookup_string(&cfg, "top_text", &top_text) &&
-        config_lookup_string(&cfg, "bottom_text", &bottom_text))) {
+
+    if (!config_lookup_int(&cfg, "border_width", &st->border_width)) {
             if (!quiet)
-                fprintf(stderr, "Error in the '%s' config file: missing/invalid values.\n", cfg_path);
-            config_destroy(&cfg);
-            return -1;
+                fprintf(stderr, "Error in the '%s' config file: invalid 'border_width' value. Using the default one instead.\n", cfg_path);
+            st->columns = DEF_BW;
     }
+    if (!config_lookup_int(&cfg, "columns", &st->columns)) {
+            if (!quiet)
+                fprintf(stderr, "Error in the '%s' config file: invalid 'columns' value. Using the default one instead.\n", cfg_path);
+            st->columns = DEF_COLS;
+    }
+
     if (st->columns <= 0) {
         if (!quiet)
-            fprintf(stderr, "Error in the '%s' config file: invalid 'columns' value");
-        return -1;
+            fprintf(stderr, "Error in the '%s' config file: invalid 'columns' value. Using the default one instead.\n", cfg_path);
+        st->columns = DEF_COLS;
     }
     
-    size_t top_len = strlen(top_text), bottom_len = strlen(bottom_text);
-    st->top_text = malloc(sizeof(char) * (top_len + 1));
-    st->bottom_text  = malloc(sizeof(char) * (bottom_len + 1));
-    strncpy(st->top_text, top_text, top_len + 1);
-    strncpy(st->bottom_text, bottom_text, bottom_len + 1);
+    const char *top_text, *bottom_text;
+    if (!config_lookup_string(&cfg, "top_text", &top_text)) {
+            if (!quiet)
+                fprintf(stderr, "Error in the '%s' config file: invalid 'top_text' value. Using the default one instead.\n", cfg_path);
+            size_t top_len = strlen(DEF_TOP_TEXT);
+            st->top_text = malloc((top_len + 1) * sizeof(char));
+            strncpy(st->top_text, DEF_TOP_TEXT, top_len + 1);
+    }
+    else {
+        size_t top_len = strlen(top_text);
+        st->top_text = malloc(sizeof(char) * (top_len + 1));
+        strncpy(st->top_text, top_text, top_len + 1);
+    }
+
+    if (!config_lookup_string(&cfg, "bottom_text", &bottom_text)) {
+            if (!quiet)
+                fprintf(stderr, "Error in the '%s' config file: invalid 'bottom_text' value. Using the default one instead.\n", cfg_path);
+            size_t bottom_len = strlen(DEF_BOTTOM_TEXT);
+            st->bottom_text = malloc((bottom_len + 1) * sizeof(char));
+            strncpy(st->bottom_text, DEF_BOTTOM_TEXT, bottom_len + 1);
+    }
+    else {
+        size_t bottom_len = strlen(bottom_text);
+        st->bottom_text = malloc(sizeof(char) * (bottom_len + 1));
+        strncpy(st->bottom_text, bottom_text, bottom_len + 1);
+    }
 
     config_setting_t *size = config_lookup(&cfg, "size");
     if (size != NULL) {
-        st->width = config_setting_get_int_elem(size, 0);
-        st->height = config_setting_get_int_elem(size, 1);
+        int w_succ = config_setting_lookup_int(size, "width", &st->width);
+        if (!w_succ) {
+            if (!quiet)
+                fprintf(stderr, "Error in the 'width' configuration: invalid/missing values. Using the default value instead.\n");
+            st->width = DEF_W;
+        }
+        int h_succ = config_setting_lookup_int(size, "height", &st->height);
+        if (!h_succ) {
+            if (!quiet)
+                fprintf(stderr, "Error in the 'height' configuration: invalid/missing values. Using the default value instead.\n");
+            st->height = DEF_H;
+        }
     }
     else {
         if (!quiet)
-            fprintf(stderr, "Error in the 'position' configuration: invalid/missing values.\n");
-        return -1;
+            fprintf(stderr, "Error in the 'position' configuration: invalid/missing values. Using the default values instead.\n");
+        st->width = DEF_W;
+        st->height = DEF_H;
     }
 
     for (int i = 0; i < N; ++i) {
-        int valid_options[OPTIONS_NUM];
+        int valid_options[BUTTON_OPTS];
         config_setting_t *setting = config_lookup(&cfg, button_names[i]);
         if (setting != NULL) {
             const char *title;
             valid_options[0] = config_setting_lookup_string(setting, "title", &title);
-            size_t title_len = strlen(title);
-            buttons_cfg[i]->title = malloc((title_len + 1) * sizeof(char));
-            strncpy(buttons_cfg[i]->title, title, title_len + 1);
+            if (valid_options[0]) {
+                size_t title_len = strlen(title);
+                buttons_cfg[i]->title = malloc((title_len + 1) * sizeof(char));
+                strncpy(buttons_cfg[i]->title, title, title_len + 1);
+            }
 
             const char *label;
             valid_options[1] = config_setting_lookup_string(setting, "label", &label);
@@ -197,31 +233,48 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
 
             const char *style;
             valid_options[4] = config_setting_lookup_string(setting, "style", &style);
-            size_t style_len = strlen(style);
-            buttons_cfg[i]->style = malloc((style_len + 1) * sizeof(char));
-            strncpy(buttons_cfg[i]->style, style, style_len + 1);
+            if (valid_options[4]) {
+                size_t style_len = strlen(style);
+                buttons_cfg[i]->style = malloc((style_len + 1) * sizeof(char));
+                strncpy(buttons_cfg[i]->style, style, style_len + 1);
+            }
 
             int sel, inv, bind;
             valid_options[5] = config_setting_lookup_bool(setting, "selected", &sel);
             valid_options[6] = config_setting_lookup_bool(setting, "invisible", &inv);
             valid_options[7] = config_setting_lookup_int(setting, "bind", &bind);
-            buttons_cfg[i]->selected = (bool) sel;
-            buttons_cfg[i]->invisible = (bool) inv;
+            if (valid_options[5]) {
+                buttons_cfg[i]->selected = (bool) sel;
+            }
+            if (valid_options[6]) {
+                buttons_cfg[i]->invisible = (bool) inv;
+            }
             buttons_cfg[i]->bind = (guint) bind;
 
-            for (int j = 0; j < OPTIONS_NUM; ++j) {
-                if (!valid_options[j]) {
+            for (int j = 0; j < BUTTON_OPTS; ++j) {
+                if (!valid_options[j] && (j == 0 || (j >= 4 && j <= 6))) {
                     if (!quiet)
-                        fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
+                        fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values. Using the default values instead.\n", button_names[i]);
+                    size_t title_len = strlen(DEF_TITLE);
+                    buttons_cfg[i]->title = malloc((title_len + 1) * sizeof(char));
+                    strncpy(buttons_cfg[i]->title, DEF_TITLE, title_len + 1);
+                    size_t style_len = strlen(DEF_STYLE);
+                    buttons_cfg[i]->style = malloc((style_len + 1) * sizeof(char));
+                    strncpy(buttons_cfg[i]->style, DEF_STYLE, style_len + 1);
+                    buttons_cfg[i]->selected = DEF_SEL;
+                    buttons_cfg[i]->invisible = DEF_INV;
+                }
+                else if (!valid_options[j]) {
+                    if (!quiet)
+                        fprintf(stderr, "Error in the '%s' button configuration: invalid/missing required values. Exiting.\n", button_names[i]);
                     return -1;
                 }
             }
         }
         else {
             if (!quiet)
-                fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values.\n", button_names[i]);
-            return -1;
-        }   
+                fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values. Exiting.\n", button_names[i]);
+        }
     }
     
     config_destroy(&cfg);

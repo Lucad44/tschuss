@@ -44,7 +44,7 @@ There currently are 5 command line options. You can find out about them via the 
 ## CSS
 Modify the `style.css` file in order to change the colour, background, font, raidiuses, borders and everything else CSS-related.
 
-You can edit the CSS file path via the `--css-file` command line option.
+The default path is `~/.config/tschuss/style.css`, but you can edit the CSS file path via the `--css-file` command line option.
 
 There's a `#window` label that allows you to customise the main window where everything is placed upon.
 

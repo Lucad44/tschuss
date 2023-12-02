@@ -9,6 +9,7 @@ Please read the instructions below in order to configure it and customise it pro
 * GTK+
 * GObject Introspection
 * libconfig
+* meson
 * gtk-layer-shell (optional)
 
 # Installation
@@ -25,9 +26,9 @@ ninja -C build
 sudo ninja -C build install
 ```
 
-The executable file will be in found in `.../tschuss/build/`.
+The executable file will be in found in `.../tschuss/build/tschuss`.
 
-A default configuration and a default CSS file will be placed in the `/etc/tschuss/` folder. You should copy those files to a path of your liking (default one recommended).
+A default configuration and a default CSS file will be placed in the `/etc/tschuss/` folder. You should copy those files to a path of your liking and edit them there (default path `~/.config/tschuss/` is recommended).
 
 
 # Run

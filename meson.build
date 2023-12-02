@@ -14,10 +14,12 @@ src = [
     'src/buttons.c'
 ]
 
+layershell = dependency('gtk-layer-shell-0', required: false)
+
 project_dependencies = [
     dependency('gtk+-3.0', method: 'pkg-config'),
-    dependency('gtk-layer-shell-0', required: false),
-    dependency('libconfig')
+    dependency('libconfig'),
+    layershell
 ]
 
 add_project_arguments(
@@ -31,6 +33,10 @@ add_project_arguments(
     ],
     language: 'c'
 )
+
+if layershell.found()
+    add_project_arguments('-DLAYERSHELL=1', language : 'c')
+endif
 
 install_data(['tschuss.conf', 'style.css'], install_dir: sysconfdir / 'tschuss')
 

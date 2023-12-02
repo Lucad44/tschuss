@@ -37,7 +37,7 @@ Run `tschuss` and exit via the `ESC` key.
 
 # Command line options
 
-There currently are 5 command line options. You can find out about them via the `--help` option.
+There currently are 5 command line options. You can find out about them via the `--help` command line option.
 
 # Customisation
 

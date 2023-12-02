@@ -43,6 +43,8 @@ There currently are 5 command line options. You can find out about them via the 
 ## CSS
 Modify the `style.css` file in order to change the colour, background, font, raidiuses, borders and everything else CSS-related.
 
+You can edit the CSS file path via the `--css-file` command line option.
+
 There's a `#window` label that allows you to customise the main window where everything is placed upon.
 
 Then there are 6 button labels (namely `#shutdown`, `#reboot`, `#logout`, `#hibernate` and `#suspend`) 
@@ -61,7 +63,7 @@ Edit the `tschuss.conf` configuration file, in order to modify the window's and 
 
 The default path for the config file is `~/.config/tschuss/tschuss.conf`, but you can set any path via the `--config-file` command line option, altough not recommended. 
 
-For all the options with the *optional* tag, a default setting will be used if none is found in the config file. Instead, the program will be aborted for missing/invalid values W/O the *optional* tag. 
+For all the options with the *optional* tag, a default setting will be used if none is found in the config file. Instead, the program will be aborted for missing/invalid config values W/O the *optional* tag. 
 
 Here's a full list of all the options:
 

@@ -68,8 +68,6 @@ For all the options with the *optional* tag, a default setting will be used if n
 
 The semicolons (`';'`) are completely optional in the configuration file.
 
-Here's a full list of all the options:
-
 ## Window options
 
 **Height** (`height`, *optional*)

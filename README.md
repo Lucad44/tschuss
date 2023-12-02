@@ -66,6 +66,8 @@ The default path for the config file is `~/.config/tschuss/tschuss.conf`, but yo
 
 For all the options with the *optional* tag, a default setting will be used if none is found in the config file. Instead, the program will be aborted for missing/invalid config values W/O the *optional* tag. 
 
+The semicolons (`';'`) are completely optional in the configuration file.
+
 Here's a full list of all the options:
 
 ## Window options

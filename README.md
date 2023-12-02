@@ -141,11 +141,11 @@ NOTE that the `ESC` key (27) is reserved for exiting the program.
 
 **IMPORTANT**
 
-Keep in mind that as of now, ALL the values in the configuration must be set to something for the program to start, otherwise it will output an error. In the future I'll probably make some of the configurations optional and add default values for them as well.
+Keep in mind that all the required values (without the *optional* tag) in the configuration must be set to something for the program to start, otherwise it will output an error and abort.
 
 **Transparent background**
 
-I haven't had the possibility to check it myself, but you should be able to set a background transparecny via the CSS file on X11.
+I haven't had the possibility to check it myself, but you should be able to set a background transparency via the CSS file on X11 systems.
 
 Instead if your system is running on, for example, Wayland, you must do it from your display server configuration file.
 For example, on Hyprland you can add in your `hyprland.conf` config file this line:

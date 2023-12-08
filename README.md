@@ -123,9 +123,9 @@ If you decide to use an image, you MUST also specify its width and height, in th
 
 **Image size** (`img_size`, *optional* altough *required* if you set an image)
 
-The width and height of the image used in the button. I'd recommend setting an equal value for both, so that the resulting image will be square, but you can do whatever you please.
+The width and height of the image used in the button, which you can scale however you like with this option. I'd recommend setting an equal value for both, so that the resulting image will be square, but you can do whatever you please.
 
-*Note that the program will be aborted if an image is set but not its width and height.*
+*Note that the program will be aborted if an image is set but not its scaling width and height.*
 
 **Description** (`description`, *optional*)
 

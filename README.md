@@ -28,11 +28,11 @@ Just run these commands in the terminal. Be sure to have `git` and `meson` and `
 git clone https://github.com/Lucad44/tschuss
 cd tschuss
 meson setup build
-ninja -C build
-sudo ninja -C build install
+meson compile -C build
+sudo meson install -C build
 ```
 
-The executable file will be in found in `.../tschuss/build/tschuss`.
+The executable file will be in found in `.../tschuss/build/tschuss`, but meson will also install it in `/etc/local/bin`, so you can run it simply by typing `tschuss` in the terminal.
 
 A default configuration and a default CSS file will be placed in the `/etc/tschuss/` folder. You should copy those files to a path of your liking and edit them there (default path `~/.config/tschuss/` is recommended).
 

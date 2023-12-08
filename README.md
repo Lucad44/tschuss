@@ -2,9 +2,9 @@
 Simple and fast highly customisable dropdown power menu for Linux systems.
 Please read the instructions below in order to configure it and customise it properly.
 
-![example1](images/tschussbig.png)
+![example1](images/preview1.png)
 
-![example2](images/tschusssm.png)
+![example2](images/preview2.png)
 
 *Note: if you notice the 'icons' are not exactly centred, it's because I'm using Nerd Fonts in the example pictures, which sometimes glitch*
 

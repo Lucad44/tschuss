@@ -219,55 +219,88 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
             buttons_cfg[i]->label = malloc((label_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->label, label, label_len + 1);
 
+            const char *image;
+            valid_options[2] = config_setting_lookup_string(setting, "image", &image);
+            if (valid_options[2]) {
+                size_t image_len = strlen(image);
+                buttons_cfg[i]->image = malloc((image_len + 1) * sizeof(char));
+                strncpy(buttons_cfg[i]->image, image, image_len + 1);
+            }
+
             const char *description;
-            valid_options[2] = config_setting_lookup_string(setting, "description", &description);
-            size_t description_len = strlen(description);
-            buttons_cfg[i]->description = malloc((description_len + 1) * sizeof(char));
-            strncpy(buttons_cfg[i]->description, description, description_len + 1);
+            valid_options[3] = config_setting_lookup_string(setting, "description", &description);
+            if (valid_options[3]) {
+                size_t description_len = strlen(description);
+                buttons_cfg[i]->description = malloc((description_len + 1) * sizeof(char));
+                strncpy(buttons_cfg[i]->description, description, description_len + 1);
+            }
 
             const char *action;
-            valid_options[3] = config_setting_lookup_string(setting, "action", &action);
+            valid_options[4] = config_setting_lookup_string(setting, "action", &action);
             size_t action_len = strlen(action);
             buttons_cfg[i]->action = malloc((action_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->action, action, action_len + 1);
 
             const char *style;
-            valid_options[4] = config_setting_lookup_string(setting, "style", &style);
-            if (valid_options[4]) {
+            valid_options[5] = config_setting_lookup_string(setting, "style", &style);
+            if (valid_options[5]) {
                 size_t style_len = strlen(style);
                 buttons_cfg[i]->style = malloc((style_len + 1) * sizeof(char));
                 strncpy(buttons_cfg[i]->style, style, style_len + 1);
             }
 
             int sel, inv, bind;
-            valid_options[5] = config_setting_lookup_bool(setting, "selected", &sel);
-            valid_options[6] = config_setting_lookup_bool(setting, "invisible", &inv);
-            valid_options[7] = config_setting_lookup_int(setting, "bind", &bind);
-            if (valid_options[5]) {
+            valid_options[6] = config_setting_lookup_bool(setting, "selected", &sel);
+            valid_options[7] = config_setting_lookup_bool(setting, "invisible", &inv);
+            valid_options[8] = config_setting_lookup_int(setting, "bind", &bind);
+            if (valid_options[6]) {
                 buttons_cfg[i]->selected = (bool) sel;
             }
-            if (valid_options[6]) {
+            if (valid_options[7]) {
                 buttons_cfg[i]->invisible = (bool) inv;
             }
             buttons_cfg[i]->bind = (guint) bind;
 
             for (int j = 0; j < BUTTON_OPTS; ++j) {
-                if (!valid_options[j] && (j == 0 || (j >= 4 && j <= 6))) {
+                if (!valid_options[j]) {
                     if (!quiet)
                         fprintf(stderr, "Error in the '%s' button configuration: invalid/missing values. Using the default values instead.\n", button_names[i]);
-                    size_t title_len = strlen(DEF_TITLE);
-                    buttons_cfg[i]->title = malloc((title_len + 1) * sizeof(char));
-                    strncpy(buttons_cfg[i]->title, DEF_TITLE, title_len + 1);
-                    size_t style_len = strlen(DEF_STYLE);
-                    buttons_cfg[i]->style = malloc((style_len + 1) * sizeof(char));
-                    strncpy(buttons_cfg[i]->style, DEF_STYLE, style_len + 1);
-                    buttons_cfg[i]->selected = DEF_SEL;
-                    buttons_cfg[i]->invisible = DEF_INV;
-                }
-                else if (!valid_options[j]) {
-                    if (!quiet)
-                        fprintf(stderr, "Error in the '%s' button configuration: invalid/missing required values. Exiting.\n", button_names[i]);
-                    return -1;
+                    switch (j) {
+                        case 0:
+                            size_t title_len = strlen("");
+                            buttons_cfg[i]->title = malloc((title_len + 1) * sizeof(char));
+                            strncpy(buttons_cfg[i]->title, "", title_len + 1);
+                            break;
+                        case 2:
+                            size_t img_len = strlen("");
+                            buttons_cfg[i]->image = malloc((img_len + 1) * sizeof(char));
+                            strncpy(buttons_cfg[i]->image, "", img_len + 1);
+                            break;
+                        case 3:
+                            size_t descr_len = strlen("");
+                            buttons_cfg[i]->description = malloc((descr_len + 1) * sizeof(char));
+                            strncpy(buttons_cfg[i]->description, "", descr_len + 1);
+                            break;
+                        case 5:
+                            size_t style_len = strlen(DEF_STYLE);
+                            buttons_cfg[i]->style = malloc((style_len + 1) * sizeof(char));
+                            strncpy(buttons_cfg[i]->style, DEF_STYLE, style_len + 1);
+                            break;
+                        case 6:
+                            buttons_cfg[i]->selected = (bool) DEF_SEL;
+                            break;
+                        case 7:
+                            buttons_cfg[i]->invisible = (bool) DEF_INV;
+                            break;
+                        case 1:
+                        case 4:
+                        case 8:
+                            if (!quiet)
+                                fprintf(stderr, "Error in the '%s' button configuration: invalid/missing required values. Exiting.\n", button_names[i]);
+                            return -1;
+                        default:
+                            break;
+                    }
                 }
             }
         }

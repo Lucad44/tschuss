@@ -54,9 +54,16 @@ void gen_buttons(GtkWidget *grid, struct Config *st) {
             if (strcmp(buttons_cfg[i]->title, "")) {
                 make_label(vbox, "title", buttons_cfg[i]->title, titles, i);         
             }
+
+            if (strcmp(buttons_cfg[i]->image, "")) {
+                GtkWidget *image = gtk_image_new_from_file(buttons_cfg[i]->image);
+                gtk_box_pack_start(GTK_BOX(vbox), image, TRUE, TRUE, 0);
+            }
+
             if (strcmp(buttons_cfg[i]->label, "")) {
                 make_label(vbox, "label", buttons_cfg[i]->label, main_labels, i);
             }
+
             if (strcmp(buttons_cfg[i]->description, "")) {
                 make_label(vbox, "description", buttons_cfg[i]->description, descriptions, i);
             }

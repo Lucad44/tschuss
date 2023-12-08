@@ -115,7 +115,7 @@ Text which will be positioned in the top third of the button.
 
 Text which will be positioned in the middle of the button. 
 
-**Description** (`description`)
+**Description** (`description`, *optional*)
 
 Text which will be position in the bottom third of the button.
 

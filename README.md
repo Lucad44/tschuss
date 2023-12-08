@@ -115,6 +115,18 @@ Text which will be positioned in the top third of the button.
 
 Text which will be positioned in the middle of the button. 
 
+**Image** (`image`, *optional*)
+
+Image which will be positioned in the middle of the button, below the title but above the label.
+While you could do that, I do not recommend having both a label and an image.
+If you decide to use an image, you MUST also specify its width and height, in the `img_size` config parameter.
+
+**Image size** (`img_size`, *optional* altough *required* if you set an image)
+
+The width and height of the image used in the button. I'd recommend setting an equal value for both, so that the resulting image will be square, but you can do whatever you please.
+
+*Note that the program will be aborted if an image is set but not its width and height.*
+
 **Description** (`description`, *optional*)
 
 Text which will be position in the bottom third of the button.

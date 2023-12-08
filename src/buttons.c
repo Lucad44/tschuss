@@ -56,7 +56,12 @@ void gen_buttons(GtkWidget *grid, struct Config *st) {
             }
 
             if (strcmp(buttons_cfg[i]->image, "")) {
-                GtkWidget *image = gtk_image_new_from_file(buttons_cfg[i]->image);
+                GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(buttons_cfg[i]->image, NULL);
+                GdkPixbuf *scaled = gdk_pixbuf_scale_simple(pixbuf, buttons_cfg[i]->img_width, buttons_cfg[i]->img_height, GDK_INTERP_BILINEAR);
+                GtkWidget *image = gtk_image_new_from_pixbuf(scaled);
+                g_object_unref(pixbuf);
+                g_object_unref(scaled);
+                gtk_image_set_pixel_size(GTK_IMAGE(image), 16);
                 gtk_box_pack_start(GTK_BOX(vbox), image, TRUE, TRUE, 0);
             }
 

@@ -226,37 +226,49 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
                 buttons_cfg[i]->image = malloc((image_len + 1) * sizeof(char));
                 strncpy(buttons_cfg[i]->image, image, image_len + 1);
             }
+            char img_size[128] = "";
+            snprintf(img_size, 128, "%s.img_size", button_names[i]);
+            config_setting_t *img_size_setting = config_lookup(&cfg, img_size);
+            if (img_size_setting != NULL) {
+                valid_options[3] = config_setting_lookup_int(img_size_setting, "width", &buttons_cfg[i]->img_width);
+                valid_options[4] = config_setting_lookup_int(img_size_setting, "height", &buttons_cfg[i]->img_height);
+            }
+            else if (valid_options[2]) {
+                if (!quiet)
+                    fprintf(stderr, "Error in the '%s' button configuration: image path set but invalid/not specified width and height. Aborting\n", button_names[i]);
+                return -1;
+            }
 
             const char *description;
-            valid_options[3] = config_setting_lookup_string(setting, "description", &description);
-            if (valid_options[3]) {
+            valid_options[5] = config_setting_lookup_string(setting, "description", &description);
+            if (valid_options[5]) {
                 size_t description_len = strlen(description);
                 buttons_cfg[i]->description = malloc((description_len + 1) * sizeof(char));
                 strncpy(buttons_cfg[i]->description, description, description_len + 1);
             }
 
             const char *action;
-            valid_options[4] = config_setting_lookup_string(setting, "action", &action);
+            valid_options[6] = config_setting_lookup_string(setting, "action", &action);
             size_t action_len = strlen(action);
             buttons_cfg[i]->action = malloc((action_len + 1) * sizeof(char));
             strncpy(buttons_cfg[i]->action, action, action_len + 1);
 
             const char *style;
-            valid_options[5] = config_setting_lookup_string(setting, "style", &style);
-            if (valid_options[5]) {
+            valid_options[7] = config_setting_lookup_string(setting, "style", &style);
+            if (valid_options[7]) {
                 size_t style_len = strlen(style);
                 buttons_cfg[i]->style = malloc((style_len + 1) * sizeof(char));
                 strncpy(buttons_cfg[i]->style, style, style_len + 1);
             }
 
             int sel, inv, bind;
-            valid_options[6] = config_setting_lookup_bool(setting, "selected", &sel);
-            valid_options[7] = config_setting_lookup_bool(setting, "invisible", &inv);
-            valid_options[8] = config_setting_lookup_int(setting, "bind", &bind);
-            if (valid_options[6]) {
+            valid_options[8] = config_setting_lookup_bool(setting, "selected", &sel);
+            valid_options[9] = config_setting_lookup_bool(setting, "invisible", &inv);
+            valid_options[10] = config_setting_lookup_int(setting, "bind", &bind);
+            if (valid_options[8]) {
                 buttons_cfg[i]->selected = (bool) sel;
             }
-            if (valid_options[7]) {
+            if (valid_options[9]) {
                 buttons_cfg[i]->invisible = (bool) inv;
             }
             buttons_cfg[i]->bind = (guint) bind;
@@ -276,25 +288,33 @@ int read_cfg(const char *cfg_path, struct Config *st, button *buttons_cfg[N]) {
                             buttons_cfg[i]->image = malloc((img_len + 1) * sizeof(char));
                             strncpy(buttons_cfg[i]->image, "", img_len + 1);
                             break;
-                        case 3:
+                        case 5:
                             size_t descr_len = strlen("");
                             buttons_cfg[i]->description = malloc((descr_len + 1) * sizeof(char));
                             strncpy(buttons_cfg[i]->description, "", descr_len + 1);
                             break;
-                        case 5:
+                        case 7:
                             size_t style_len = strlen(DEF_STYLE);
                             buttons_cfg[i]->style = malloc((style_len + 1) * sizeof(char));
                             strncpy(buttons_cfg[i]->style, DEF_STYLE, style_len + 1);
                             break;
-                        case 6:
+                        case 8:
                             buttons_cfg[i]->selected = (bool) DEF_SEL;
                             break;
-                        case 7:
+                        case 9:
                             buttons_cfg[i]->invisible = (bool) DEF_INV;
                             break;
-                        case 1:
+                        case 3:
                         case 4:
-                        case 8:
+                            if (valid_options[2]) {
+                                if (!quiet)
+                                    fprintf(stderr, "Error in the '%s' button configuration: image path set but invalid/not specified width and height. Aborting.\n", button_names[i]);
+                                return -1;
+                            }
+                            break;
+                        case 1:
+                        case 6:
+                        case 10:
                             if (!quiet)
                                 fprintf(stderr, "Error in the '%s' button configuration: invalid/missing required values. Exiting.\n", button_names[i]);
                             return -1;

@@ -9,7 +9,7 @@
 #define N 6
 #define MAX_USER_SZ 96
 #define CONF_OPTS 6
-#define BUTTON_OPTS 9
+#define BUTTON_OPTS 11
 
 #define DEF_H 100
 #define DEF_W 200
@@ -43,6 +43,8 @@ typedef struct {
     char *title;
     char *label;
     char *image;
+    int img_width;
+    int img_height;
     char *description;
     char *action;
     char *style;

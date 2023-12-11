@@ -32,7 +32,7 @@ meson compile -C build
 sudo meson install -C build
 ```
 
-The executable file will be in found in `.../tschuss/build/tschuss`, but meson will also install it in `/etc/local/bin`, so you can run it simply by typing `tschuss` in the terminal.
+The executable file will be in found in `.../tschuss/build/tschuss`, but meson will also install it in `/usr/local/bin`, so you can run it simply by typing `tschuss` in the terminal.
 
 A default configuration and a default CSS file will be placed in the `/etc/tschuss/` folder. You should copy those files to a path of your liking and edit them there (default path `~/.config/tschuss/` is recommended).
 
